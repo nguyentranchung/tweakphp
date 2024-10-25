@@ -12,9 +12,6 @@ export default defineConfig({
         vue(),
         electron([
             {
-                entry: 'electron/main.js',
-            },
-            {
                 // Preload scripts entry file of the Electron App.
                 entry: 'electron/main.js',
                 onstart(args) {
