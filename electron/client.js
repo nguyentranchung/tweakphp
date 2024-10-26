@@ -16,7 +16,12 @@ function getClient(data) {
 export const execute = async (event, data) => {
     let code = data.code.replaceAll('<?php', '')
     code = btoa(code)
-    exec(`${data.php} ${getClient(data)} ${data.path} execute ${code}`, (error, stdout, stderr) => {
+
+    const phpPath = `"${data.php}"`
+
+    const path = `"${data.path}"`
+
+    exec(`${phpPath} ${getClient(data)} ${path} execute ${code}`, (error, stdout, stderr) => {
         // format Y-m-d H:i:s
         const date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
         let result = '// ' + date + '\n'
