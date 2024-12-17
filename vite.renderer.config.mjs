@@ -8,11 +8,6 @@ import vsixPlugin from '@codingame/monaco-vscode-rollup-vsix-plugin'
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [vue(), vsixPlugin()],
-    resolve: {
-        alias: {
-            '@': fileURLToPath(new URL('./src/renderer', import.meta.url)),
-        },
-    },
     optimizeDeps: {
         esbuildOptions: {
             plugins: [importMetaUrlPlugin],

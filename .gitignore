@@ -36,5 +36,4 @@ dist-electron
 out/
 .vite
 
-clients/
-laravel/
+assets/clients/*.phar

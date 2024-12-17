@@ -3,7 +3,7 @@ import log from 'electron-log/main'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import { app } from 'electron'
-import * as settings from '../settings'
+import * as settings from '../settings.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename)
 export const init = async () => {
     const lspPath = app.isPackaged
         ? path.join(process.resourcesPath, 'phpactor.phar')
-        : path.join(__dirname, '/../../phpactor.phar')
+        : path.join(__dirname, '/../../assets/phpactor.phar')
 
     console.log('Initiating PHP language server')
 

@@ -3,15 +3,15 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses')
 const path = require('path')
 const glob = require('glob')
 
-const clientFiles = glob.sync(path.join(__dirname, 'clients', '*.phar'))
+const clientFiles = glob.sync(path.join(__dirname, 'assets/clients', '*.phar'))
 
 module.exports = {
     packagerConfig: {
         name: 'TweakPHP',
-        icon: './public/icon',
+        icon: './assets/icon',
         asar: true,
         appCategoryType: 'public.app-category.developer-tools',
-        extraResource: [...clientFiles, './phpactor.phar', './laravel'],
+        extraResource: [...clientFiles, './assets/phpactor.phar', './.vite/build/laravel'],
     },
     rebuildConfig: {},
     makers: [

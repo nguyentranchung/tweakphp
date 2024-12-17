@@ -8,9 +8,7 @@ import * as php from './php'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const laravelPath = app.isPackaged
-    ? path.join(process.resourcesPath, 'laravel')
-    : path.join(__dirname, '/../../laravel')
+const laravelPath = app.isPackaged ? path.join(process.resourcesPath, 'laravel') : path.join(__dirname, 'laravel')
 
 const settingsPath = path.join(__dirname, 'settings.json')
 

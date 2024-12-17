@@ -4,7 +4,7 @@ const fetch = require('node-fetch')
 const glob = require('glob')
 
 function cleanup() {
-    const files = glob.sync(path.join(__dirname, 'clients', '*.phar'))
+    const files = glob.sync(path.join(__dirname, 'assets/clients', '*.phar'))
     files.forEach(file => {
         fs.unlinkSync(file)
     })
@@ -34,7 +34,7 @@ async function main() {
         .then(data => {
             data.assets.forEach(async asset => {
                 const url = asset.browser_download_url
-                const filePath = path.join(__dirname, 'clients', asset.name)
+                const filePath = path.join(__dirname, 'assets/clients', asset.name)
                 await downloadFile(url, filePath)
             })
         })

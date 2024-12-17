@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename)
 
 function getClient(data) {
     const phpVersion = php.getVersion(settings.getSettings().php)
+    console.log(process.env.CLIENT_PATH)
     return app.isPackaged ? path.join(process.resourcesPath, `client-${phpVersion}.phar`) : process.env.CLIENT_PATH
 }
 
