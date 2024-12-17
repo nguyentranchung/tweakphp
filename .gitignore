@@ -33,3 +33,8 @@ releases
 dist-electron
 
 .env
+out/
+.vite
+
+clients/
+laravel/

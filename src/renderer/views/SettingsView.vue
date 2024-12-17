@@ -1,0 +1,71 @@
+<script setup>
+    import Container from '../components/Container.vue'
+    import Title from '../components/Title.vue'
+    import Divider from '../components/Divider.vue'
+    import { useSettingsStore } from '../stores/settings.js'
+    import SelectInput from '../components/SelectInput.vue'
+    import TextInput from '../components/TextInput.vue'
+    import PrimaryButton from '../components/PrimaryButton.vue'
+    import { ref } from 'vue'
+
+    const saved = ref(false)
+    const settingsStore = useSettingsStore()
+
+    const saveSettings = () => {
+        saved.value = true
+        settingsStore.update()
+        setTimeout(() => {
+            saved.value = false
+        }, 2000)
+    }
+</script>
+
+<template>
+    <Container class="pt-[38px]">
+        <div class="max-w-xl mx-auto p-10">
+            <div class="flex items-center justify-between">
+                <Title>Settings</Title>
+                <span :class="{ 'opacity-0': !saved, 'opacity-65': saved }" class="transition-all duration-300"
+                    >Changes Saved</span
+                >
+            </div>
+            <Divider class="mt-3" />
+            <div class="mt-3 grid grid-cols-2 items-center">
+                <div>PHP path</div>
+                <TextInput id="php" v-model="settingsStore.settings.php" @change="saveSettings()" />
+            </div>
+            <Divider class="mt-3" />
+            <div class="mt-3 grid grid-cols-2 items-center">
+                <div>Theme</div>
+                <SelectInput id="theme" v-model="settingsStore.settings.theme" @change="saveSettings()">
+                    <option v-for="theme in settingsStore.themes" :value="theme">
+                        {{ theme }}
+                    </option>
+                </SelectInput>
+            </div>
+            <Divider class="mt-3" />
+            <div class="mt-3 grid grid-cols-2 items-center">
+                <div>Editor font size</div>
+                <TextInput
+                    id="editor-font-size"
+                    v-model="settingsStore.settings.editorFontSize"
+                    @change="saveSettings()"
+                />
+            </div>
+            <Divider class="mt-3" />
+            <div class="mt-3 grid grid-cols-2 items-center">
+                <div>Editor word wrap</div>
+                <SelectInput
+                    id="editor-word-wrap"
+                    v-model="settingsStore.settings.editorWordWrap"
+                    @change="saveSettings()"
+                >
+                    <option value="on">Wrap</option>
+                    <option value="off">No Wrap</option>
+                </SelectInput>
+            </div>
+        </div>
+    </Container>
+</template>
+
+<style scoped></style>
