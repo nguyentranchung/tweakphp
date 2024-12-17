@@ -37,8 +37,12 @@ module.exports = {
             config: {
                 name: 'TweakPHP-Installer',
                 icon: './assets/icon.icns',
-                // background: './assets/dmg-background.png',
                 format: 'ULFO',
+                overwrite: true, // Force overwrite existing DMG
+                additionalDMGOptions: {
+                    // 'background': './assets/dmg-background.png',
+                    volname: 'TweakPHP-Installer',
+                },
             },
         },
     ],

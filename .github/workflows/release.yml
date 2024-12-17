@@ -49,6 +49,13 @@ jobs:
             - name: Install NPM Dependencies
               run: npm install
 
+            - name: Cleanup Mounted Volumes
+              run: |
+                  MOUNTED=$(hdiutil info | grep "/Volumes/TweakPHP-Installer" | awk '{print $1}')
+                  if [ -n "$MOUNTED" ]; then
+                      hdiutil detach "$MOUNTED" || true
+                  fi
+
             - name: Make
               run: npm run make --platform=darwin --arch=universal
               env:
