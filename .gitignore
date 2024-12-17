@@ -33,3 +33,7 @@ releases
 dist-electron
 
 .env
+out/
+.vite
+
+assets/clients/*.phar

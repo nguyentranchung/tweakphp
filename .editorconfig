@@ -1,0 +1,4 @@
+root = true
+
+[*.{js,mjs,cjs,ts,jsx,tsx}]
+indent_size = 4
