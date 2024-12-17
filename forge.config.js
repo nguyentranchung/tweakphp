@@ -12,6 +12,7 @@ module.exports = {
         asar: true,
         appCategoryType: 'public.app-category.developer-tools',
         extraResource: [...clientFiles, './assets/phpactor.phar', './.vite/build/laravel'],
+        osxUniversal: true,
     },
     rebuildConfig: {},
     makers: [
@@ -19,10 +20,10 @@ module.exports = {
             name: '@electron-forge/maker-squirrel',
             config: {},
         },
-        {
-            name: '@electron-forge/maker-zip',
-            platforms: ['darwin'],
-        },
+        // {
+        //     name: '@electron-forge/maker-zip',
+        //     platforms: ['darwin'],
+        // },
         {
             name: '@electron-forge/maker-deb',
             config: {},
@@ -30,6 +31,15 @@ module.exports = {
         {
             name: '@electron-forge/maker-rpm',
             config: {},
+        },
+        {
+            name: '@electron-forge/maker-dmg',
+            config: {
+                name: 'TweakPHP-Installer',
+                icon: './assets/icon.icns',
+                // background: './assets/dmg-background.png',
+                format: 'ULFO',
+            },
         },
     ],
     plugins: [
