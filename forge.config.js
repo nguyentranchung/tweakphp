@@ -13,6 +13,7 @@ module.exports = {
         appCategoryType: 'public.app-category.developer-tools',
         extraResource: [...clientFiles, './assets/phpactor.phar', './.vite/build/laravel'],
         osxUniversal: true,
+        osxSign: false
     },
     rebuildConfig: {},
     makers: [
@@ -37,8 +38,8 @@ module.exports = {
             config: {
                 name: 'TweakPHP-Installer',
                 icon: './assets/icon.icns',
-                format: 'ULFO',
                 overwrite: true,
+                format: 'UDZO'
             },
         },
     ],
