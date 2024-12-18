@@ -66,7 +66,7 @@ jobs:
                   fi
 
             - name: Make
-              run: npm run make --platform=darwin --arch=universal --appVersion=${{ github.event.inputs.version }}
+              run: npm run make --platform=darwin --arch=arm64
               env:
                   VITE_LSP_WEBSOCKET_PORT: 54331
 
@@ -77,10 +77,14 @@ jobs:
               run: ls -la ./out/make/zip/darwin/arm64
 
             - name: Run xattr on the app
-              run: xattr -cr ./out/TweakPHP-darwin-arm64/TweakPHP.app
+              run: |
+                  cd ./out/TweakPHP-darwin-arm64
+                  xattr -cr TweakPHP.app
 
-            - name: Create Zip
-              run: zip -r ./out/TweakPHP-${{ github.event.inputs.version }}.zip ./out/TweakPHP-darwin-arm64/TweakPHP.app
+            - name: Create Zip without output
+              run: |
+                  cd ./out/TweakPHP-darwin-arm64
+                  zip -r -X ../TweakPHP-${{ github.event.inputs.version }}.zip TweakPHP.app
 
             - name: Upload Release Asset
               uses: actions/upload-release-asset@v1
