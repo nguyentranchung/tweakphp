@@ -47,7 +47,8 @@ jobs:
             matrix:
                 node-version: ['21.x']
         steps:
-            - uses: actions/checkout@v2
+            - name: Checkout Repository
+              uses: actions/checkout@v3
 
             - name: Setup Node.js
               uses: actions/setup-node@v2
@@ -75,11 +76,17 @@ jobs:
             - name: List Files in the darwin arm64 directory
               run: ls -la ./out/make/zip/darwin/arm64
 
+            - name: Run xattr on the app
+              run: xattr -cr ./out/TweakPHP-darwin-arm64/TweakPHP.app
+
+            - name: Create Zip
+              run: zip -r ./out/TweakPHP-${{ github.event.inputs.version }}.zip ./out/TweakPHP-darwin-arm64/TweakPHP.app
+
             - name: Upload Release Asset
               uses: actions/upload-release-asset@v1
               with:
                   upload_url: ${{ needs.release.outputs.upload_url }}
-                  asset_path: ./out/make/zip/darwin/arm64/TweakPHP-darwin-arm64-${{ github.event.inputs.version }}.zip
+                  asset_path: ./out/TweakPHP-${{ github.event.inputs.version }}.zip
                   asset_name: TweakPHP-${{ github.event.inputs.version }}.zip
                   asset_content_type: application/octet-stream
               env:
