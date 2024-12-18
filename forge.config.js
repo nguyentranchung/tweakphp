@@ -13,7 +13,7 @@ module.exports = {
         appCategoryType: 'public.app-category.developer-tools',
         extraResource: [...clientFiles, './assets/phpactor.phar', './.vite/build/laravel'],
         osxUniversal: true,
-        osxSign: false
+        osxSign: false,
     },
     rebuildConfig: {},
     makers: [
@@ -39,7 +39,7 @@ module.exports = {
                 name: 'TweakPHP-Installer',
                 icon: './assets/icon.icns',
                 overwrite: true,
-                format: 'UDZO'
+                format: 'UDZO',
             },
         },
     ],
@@ -83,5 +83,17 @@ module.exports = {
             [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
             [FuseV1Options.OnlyLoadAppFromAsar]: false,
         }),
+    ],
+    publishers: [
+        {
+            name: '@electron-forge/publisher-github',
+            config: {
+                repository: {
+                    owner: 'tweakphp',
+                    name: 'tweakphp',
+                },
+                prerelease: true,
+            },
+        },
     ],
 }
