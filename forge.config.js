@@ -13,6 +13,7 @@ module.exports = {
         appCategoryType: 'public.app-category.developer-tools',
         extraResource: [...clientFiles, './assets/phpactor.phar', './.vite/build/laravel'],
         osxSign: false,
+        osxNotarize: false,
     },
     rebuildConfig: {},
     makers: [
@@ -32,15 +33,15 @@ module.exports = {
             name: '@electron-forge/maker-rpm',
             config: {},
         },
-        // {
-        //     name: '@electron-forge/maker-dmg',
-        //     config: {
-        //         name: 'TweakPHP-Installer',
-        //         icon: './assets/icon.icns',
-        //         overwrite: true,
-        //         format: 'UDZO',
-        //     },
-        // },
+        {
+            name: '@electron-forge/maker-dmg',
+            config: {
+                name: 'TweakPHP-Installer',
+                icon: './assets/icon.icns',
+                overwrite: true,
+                format: 'UDZO',
+            },
+        },
     ],
     plugins: [
         {
