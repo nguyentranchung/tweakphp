@@ -33,15 +33,15 @@ module.exports = {
             name: '@electron-forge/maker-rpm',
             config: {},
         },
-        // {
-        //     name: '@electron-forge/maker-dmg',
-        //     config: {
-        //         name: 'TweakPHP-Installer',
-        //         icon: './assets/icon.icns',
-        //         overwrite: true,
-        //         format: 'UDZO',
-        //     },
-        // },
+        {
+            name: '@electron-forge/maker-dmg',
+            config: {
+                name: 'TweakPHP-Installer',
+                icon: './assets/icon.icns',
+                overwrite: true,
+                format: 'UDZO',
+            },
+        },
     ],
     plugins: [
         {
@@ -93,6 +93,7 @@ module.exports = {
                     name: 'tweakphp',
                 },
                 prerelease: true,
+                tagPrefix: null,
             },
         },
     ],
