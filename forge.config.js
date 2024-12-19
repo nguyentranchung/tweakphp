@@ -93,7 +93,7 @@ module.exports = {
                     name: 'tweakphp',
                 },
                 prerelease: true,
-                tagPrefix: null,
+                tagPrefix: '',
             },
         },
     ],
