@@ -36,7 +36,7 @@ jobs:
                   fi
 
             - name: Make
-              run: npm run publish --platform=darwin --arch=universal
+              run: npm run publish -- --arch="universal"
               env:
                   VITE_LSP_WEBSOCKET_PORT: 54331
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
