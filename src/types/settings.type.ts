@@ -1,6 +1,6 @@
 export interface Settings {
   laravelPath: string
-  php: string | 'undefined'
+  php: string | ''
   theme: string
   editorFontSize: number
   editorWordWrap: string
