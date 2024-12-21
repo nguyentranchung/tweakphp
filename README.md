@@ -6,7 +6,7 @@
 
 TweakPHP is a desktop application with a code editor to tweak your PHP code.
 
-**TweakPHP is currently alpha**
+**TweakPHP is currently Beta**
 
 ## Demo
 
@@ -31,13 +31,3 @@ Run the app
 ```
 npm run dev
 ```
-
-## Roadmap to Beta release
-
-- [ ] Symfony Loader (currently Composer loader handles it)
-- [ ] WordPress Loader
-- [ ] Built-in Laravel
-- [ ] Build actions for Mac
-- [ ] SSH code execution
-- [ ] Docker code execution
-- [ ] Icon
