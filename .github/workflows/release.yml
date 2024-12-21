@@ -69,3 +69,4 @@ jobs:
         env:
           VITE_LSP_WEBSOCKET_PORT: 54331
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
