@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import path from 'node:path'
 import electron from 'vite-plugin-electron/simple'
 import vue from '@vitejs/plugin-vue'
-import viteUnzipPlugin from './vite.unzip.plugin'
 import viteClientsPlugin from './vite.clients.plugin'
 import importMetaUrlPlugin from '@codingame/esbuild-import-meta-url-plugin'
 import vsixPlugin from '@codingame/monaco-vscode-rollup-vsix-plugin'
@@ -24,10 +23,6 @@ export default defineConfig({
   plugins: [
     vue(),
     vsixPlugin(),
-    // viteUnzipPlugin({
-    //   zipPath: './laravel.zip',
-    //   outputDir: 'public',
-    // }),
     viteClientsPlugin(),
     electron({
       main: {

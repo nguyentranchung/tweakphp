@@ -6,13 +6,13 @@
     "name": "Saeed Vaziry",
     "email": "mr.saeedvaziry@gmail.com"
   },
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "main": "dist/main.js",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
-    "build-mac": "npm run build && electron-builder --mac --universal",
+    "build-mac": "npm run build && electron-builder --publish always --mac --universal",
     "preview": "vite preview",
     "lint": "prettier --check ./",
     "lint:fix": "prettier --write ./"
