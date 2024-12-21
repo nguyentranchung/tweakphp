@@ -15,6 +15,11 @@ export const init = async () => {
 
   console.log('Initiating PHP language server')
 
+  if (!settings.getSettings().php) {
+    log.error('PHP executable not found in settings')
+    return
+  }
+
   try {
     await runServer.runLanguageServer({
       serverName: 'PHP',

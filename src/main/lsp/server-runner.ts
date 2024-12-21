@@ -11,14 +11,18 @@ export const runLanguageServer = async (languageServerRunConfig: RunConfig) => {
 
   await shutdown()
 
-  // start the http server
-  httpServer = app.listen(languageServerRunConfig.serverPort)
-  const wss = new WebSocketServer(languageServerRunConfig.wsServerOptions)
-  // create the web socket
-  upgradeWsServer(languageServerRunConfig, {
-    server: httpServer,
-    wss,
-  })
+  try {
+    // start the http server
+    httpServer = app.listen(languageServerRunConfig.serverPort)
+    const wss = new WebSocketServer(languageServerRunConfig.wsServerOptions)
+    // create the web socket
+    upgradeWsServer(languageServerRunConfig, {
+      server: httpServer,
+      wss,
+    })
+  } catch (error) {
+    console.error('Error starting language server', error)
+  }
 }
 
 export const shutdown = async () => {
