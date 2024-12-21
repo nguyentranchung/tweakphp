@@ -15,7 +15,7 @@ export const init = async () => {
   if (!fs.existsSync(settings.laravelPath)) {
     const zipPath = app.isPackaged
       ? path.join(process.resourcesPath, 'public/laravel.zip')
-      : path.join(__dirname, './laravel.zip')
+      : path.join(__dirname, '../public/laravel.zip')
     if (!fs.existsSync(zipPath)) {
       throw new Error(`ZIP file not found: ${zipPath}`)
     }

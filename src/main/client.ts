@@ -3,10 +3,22 @@ import { exec } from 'child_process'
 import { app } from 'electron'
 import * as settings from './settings'
 import * as php from './php'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 function getClient() {
   const phpVersion = php.getVersion(settings.getSettings().php)
-  return app.isPackaged ? path.join(process.resourcesPath, `public/client-${phpVersion}.phar`) : process.env.CLIENT_PATH
+  if (app.isPackaged) {
+    return path.join(process.resourcesPath, `public/client-${phpVersion}.phar`)
+  }
+
+  if (process.env.CLIENT_PATH) {
+    return process.env.CLIENT_PATH
+  }
+
+  return path.join(__dirname, `../public/client-${phpVersion}.phar`)
 }
 
 export const execute = async (event: Electron.IpcMainEvent, data: { code: string; php: string; path: string }) => {

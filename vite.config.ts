@@ -23,7 +23,6 @@ export default defineConfig({
   plugins: [
     vue(),
     vsixPlugin(),
-    viteClientsPlugin(),
     electron({
       main: {
         // Shortcut of `build.lib.entry`.
