@@ -68,6 +68,7 @@ jobs:
         run: npm run build-mac
         env:
           VITE_LSP_WEBSOCKET_PORT: 54331
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload dmg
         uses: actions/upload-release-asset@v1
