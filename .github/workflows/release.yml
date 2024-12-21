@@ -2,52 +2,12 @@ name: Release
 
 on:
   workflow_dispatch:
-#    inputs:
-#      version:
-#        description: 'Version'
-#        required: true
-#        type: string
 
 permissions:
   contents: write
 
 jobs:
-  #  release:
-  #    runs-on: ubuntu-latest
-  #    outputs:
-  #      upload_url: ${{ steps.create_release.outputs.upload_url }}
-  #    steps:
-  #      - name: Checkout Repository
-  #        uses: actions/checkout@v3
-  #
-  #      - name: Install NPM Dependencies
-  #        run: npm install
-  #
-  #      - name: Set version on package.json
-  #        run: node set-version.js ${{ github.event.inputs.version }}
-  #
-  #      - name: Fix lint
-  #        run: npm run lint:fix
-  #
-  #      - name: Commit version change
-  #        uses: stefanzweifel/git-auto-commit-action@v5
-  #        with:
-  #          commit_message: 'Update version to ${{ github.event.inputs.version }}'
-  #
-  #      - name: Create GitHub Release
-  #        id: create_release
-  #        uses: actions/create-release@v1
-  #        with:
-  #          tag_name: v${{ github.event.inputs.version }}
-  #          release_name: v${{ github.event.inputs.version }}
-  #          body: 'Automated Release'
-  #          draft: false
-  #          prerelease: false
-  #        env:
-  #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   build-mac:
-    #    needs: release
     runs-on: macos-latest
     strategy:
       matrix:
@@ -69,4 +29,3 @@ jobs:
         env:
           VITE_LSP_WEBSOCKET_PORT: 54331
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}

@@ -14,10 +14,8 @@ export const getPHPPath = () => {
   }
 
   try {
-    const phpPath = execSync('/usr/bin/which php').toString().trim()
-    const escapedPath = phpPath.replace(/ /g, '\\ ')
-    cachedPhpPath = escapedPath
-    return escapedPath
+    cachedPhpPath = execSync('/usr/bin/which php').toString().trim()
+    return cachedPhpPath
   } catch (error) {
     console.error(`Error retrieving PHP path: ${error}`)
     throw new Error('Unable to retrieve PHP path')

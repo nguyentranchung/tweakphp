@@ -57,7 +57,7 @@ app.whenReady().then(async () => {
   }
 
   ipcMain.on('init', async event => {
-    laravel.init()
+    await laravel.init()
     event.reply('init.reply', {
       settings: settings.getSettings(),
     })

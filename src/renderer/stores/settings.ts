@@ -6,6 +6,7 @@ import monokaiTheme from '../assets/editor-themes/monokai.json'
 import githubLightTheme from '../assets/editor-themes/github-light.json'
 import catppuccinTheme from '../assets/editor-themes/catppuccin.json'
 import { computed, ref } from 'vue'
+import { Settings } from '../../types/settings.type.ts'
 
 // Explicitly type the themes
 const typedNordTheme = nordTheme as monaco.editor.IStandaloneThemeData
@@ -26,17 +27,16 @@ export const useSettingsStore = defineStore('settings', () => {
   // get keys of themeColors object
   const themes = ref(Object.keys(themeColors))
 
-  let defaultSettings = {
+  let defaultSettings: Settings = {
     laravelPath: '',
     php: '/opt/homebrew/bin/php',
-    phpVersion: '',
     theme: 'dracula',
     editorFontSize: 15,
     editorWordWrap: 'on',
     layout: 'vertical',
   }
 
-  const settings = ref(defaultSettings)
+  const settings = ref<Settings>(defaultSettings)
 
   const colors = computed(() => {
     return themeColors[settings.value.theme as keyof typeof themeColors]
@@ -44,8 +44,9 @@ export const useSettingsStore = defineStore('settings', () => {
 
   const update = () => {
     // clone settings json
-    let json = JSON.parse(JSON.stringify(settings.value))
-    window.ipcRenderer.send('settings.store', json)
+    window.ipcRenderer.send('settings.store', {
+      ...settings.value,
+    })
   }
 
   const defineEditorThemes = () => {
