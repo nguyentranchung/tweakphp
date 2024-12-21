@@ -11,6 +11,7 @@
   "main": "dist/main.js",
   "scripts": {
     "dev": "vite",
+    "update-clients": "node ./scripts/update-clients.js",
     "build": "vue-tsc && vite build",
     "build-mac": "npm run build && electron-builder --publish always --mac --universal",
     "preview": "vite preview",
