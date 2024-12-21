@@ -20,6 +20,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Install NPM Dependencies
+        run: npm install
+
       - name: Set version on package.json
         run: node set-version.js ${{ github.event.inputs.version }}
 
