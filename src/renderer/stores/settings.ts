@@ -29,7 +29,7 @@ export const useSettingsStore = defineStore('settings', () => {
 
   let defaultSettings: Settings = {
     laravelPath: '',
-    php: '/opt/homebrew/bin/php',
+    php: '',
     theme: 'dracula',
     editorFontSize: 15,
     editorWordWrap: 'on',

@@ -18,11 +18,12 @@ export const getPHPPath = () => {
     return cachedPhpPath
   } catch (error) {
     console.error(`Error retrieving PHP path: ${error}`)
-    throw new Error('Unable to retrieve PHP path')
   }
+
+  return ''
 }
 
-export const getVersion = (path: string) => {
+export const getVersion = (path: string | undefined) => {
   try {
     const command = `"${path}" -r "echo PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION . PHP_EOL;"`
     const output = execSync(command, { encoding: 'utf8' })

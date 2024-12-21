@@ -13,7 +13,8 @@
     "dev": "vite",
     "update-clients": "node ./scripts/update-clients.js",
     "build": "vue-tsc && vite build",
-    "build-mac": "npm run build && electron-builder --publish always --mac --universal",
+    "build-mac": "npm run build && electron-builder --mac --universal",
+    "publish-mac": "npm run build && electron-builder --publish always --mac --universal",
     "preview": "vite preview",
     "lint": "prettier --check ./",
     "lint:fix": "prettier --write ./"

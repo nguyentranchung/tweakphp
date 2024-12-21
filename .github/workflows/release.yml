@@ -24,8 +24,8 @@ jobs:
       - name: Install NPM Dependencies
         run: npm install
 
-      - name: Build
-        run: npm run build-mac
+      - name:  Build & Publish
+        run: npm run publish-mac
         env:
           VITE_LSP_WEBSOCKET_PORT: 54331
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -17,7 +17,8 @@ export const init = async () => {
       ? path.join(process.resourcesPath, 'public/laravel.zip')
       : path.join(__dirname, '../public/laravel.zip')
     if (!fs.existsSync(zipPath)) {
-      throw new Error(`ZIP file not found: ${zipPath}`)
+      console.error(`ZIP file not found: ${zipPath}`)
+      return
     }
 
     const zip = new AdmZip(zipPath)

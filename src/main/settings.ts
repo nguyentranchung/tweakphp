@@ -13,7 +13,7 @@ const laravelPath = app.isPackaged
   ? path.join(process.resourcesPath, 'public/laravel')
   : path.join(__dirname, 'laravel')
 
-const settingsPath = path.join(__dirname, 'settings.json')
+const settingsPath = app.isPackaged ? path.join(process.resourcesPath, `settings.json`) : path.join(__dirname, 'settings.json')
 
 const defaultSettings: Settings = {
   laravelPath: laravelPath,
@@ -24,7 +24,7 @@ const defaultSettings: Settings = {
   layout: 'vertical',
 }
 
-export const storeSettings = async (_event: any, data: any) => {
+export const storeSettings = async (_event: any, data: Settings) => {
   fs.writeFileSync(settingsPath, JSON.stringify(data))
   await lsp.init()
 }
@@ -49,6 +49,7 @@ export const getSettings = () => {
     }
   } else {
     settings = defaultSettings
+    storeSettings(null, settings)
   }
 
   // merge default settings with stored settings and take stored settings as priority
