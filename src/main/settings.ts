@@ -13,7 +13,9 @@ const laravelPath = app.isPackaged
   ? path.join(process.resourcesPath, 'public/laravel')
   : path.join(__dirname, 'laravel')
 
-const settingsPath = app.isPackaged ? path.join(process.resourcesPath, `settings.json`) : path.join(__dirname, 'settings.json')
+const settingsPath = app.isPackaged
+  ? path.join(process.resourcesPath, `settings.json`)
+  : path.join(__dirname, 'settings.json')
 
 const defaultSettings: Settings = {
   laravelPath: laravelPath,
