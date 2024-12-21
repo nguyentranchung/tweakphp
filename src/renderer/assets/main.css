@@ -4,5 +4,5 @@
 @tailwind utilities;
 
 .monaco-editor {
-    position: absolute !important;
+  position: absolute !important;
 }

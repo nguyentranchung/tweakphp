@@ -1,10 +1,10 @@
 {
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "es5",
-    "vueIndentScriptAndStyle": true,
-    "arrowParens": "avoid",
-    "tabWidth": 4,
-    "quoteProps": "consistent",
-    "printWidth": 120
+  "semi": false,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "vueIndentScriptAndStyle": true,
+  "arrowParens": "avoid",
+  "tabWidth": 2,
+  "quoteProps": "consistent",
+  "printWidth": 120
 }

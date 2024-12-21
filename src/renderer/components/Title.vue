@@ -1,9 +1,9 @@
-<script setup></script>
+<script setup lang="ts"></script>
 
 <template>
-    <h1 class="text-2xl">
-        <slot></slot>
-    </h1>
+  <h1 class="text-2xl">
+    <slot></slot>
+  </h1>
 </template>
 
 <style scoped></style>

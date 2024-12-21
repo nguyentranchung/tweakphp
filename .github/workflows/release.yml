@@ -1,42 +1,87 @@
 name: Release
 
 on:
-    workflow_dispatch:
-        inputs:
-            version:
-                description: 'Version'
-                required: true
-                type: string
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        required: true
+        type: string
 
 permissions:
-    contents: write
+  contents: write
 
 jobs:
-    build-mac:
-        runs-on: macos-latest
-        strategy:
-            matrix:
-                node-version: ['21.x']
-        steps:
-            - uses: actions/checkout@v2
+  release:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-            - name: Setup Node.js
-              uses: actions/setup-node@v2
-              with:
-                  node-version: '21.x'
+      - name: Set version on package.json
+        run: node set-version.js ${{ github.event.inputs.version }}
 
-            - name: Install NPM Dependencies
-              run: npm install
+      - name: Fix lint
+        run: npm run lint:fix
 
-            - name: Cleanup Mounted Volumes
-              run: |
-                  MOUNTED=$(hdiutil info | grep "/Volumes/TweakPHP-Installer" | awk '{print $1}')
-                  if [ -n "$MOUNTED" ]; then
-                      hdiutil detach "$MOUNTED" || true
-                  fi
+      - name: Commit version change
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'Update version to ${{ github.event.inputs.version }}'
 
-            - name: Make
-              run: npm run publish -- --arch="universal"
-              env:
-                  VITE_LSP_WEBSOCKET_PORT: 54331
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          release_name: ${{ github.event.inputs.version }}
+          body: 'Automated Release'
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-mac:
+    needs: release
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        node-version: ['21.x']
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '21.x'
+
+      - name: Install NPM Dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build-mac
+        env:
+          VITE_LSP_WEBSOCKET_PORT: 54331
+
+      - name: Upload dmg
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: ./release/TweakPHP-${{ github.event.inputs.version }}-universal.dmg
+          asset_name: TweakPHP-${{ github.event.inputs.version }}.dmg
+          asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload zip
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: ./release/TweakPHP-${{ github.event.inputs.version }}-universal-mac.zip
+          asset_name: TweakPHP-${{ github.event.inputs.version }}.zip
+          asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
