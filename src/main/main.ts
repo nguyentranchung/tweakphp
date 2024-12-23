@@ -40,10 +40,10 @@ app.whenReady().then(async () => {
   tray.setContextMenu(contextMenu)
 
   const window = new BrowserWindow({
-    minWidth: 1000,
-    minHeight: 600,
-    width: 1000,
-    height: 600,
+    minWidth: 1100,
+    minHeight: 700,
+    width: 1100,
+    height: 700,
     maximizable: false,
     minimizable: false,
     resizable: true,

@@ -29,10 +29,9 @@ export const execute = async (event: Electron.IpcMainEvent, data: { code: string
 
   const path = `"${data.path}"`
 
+  console.log(`${phpPath} ${getClient()} ${path} execute ${code}`)
   exec(`${phpPath} ${getClient()} ${path} execute ${code}`, (stdout, stderr) => {
-    // format Y-m-d H:i:s
-    const date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
-    let result = '// ' + date + '\n'
+    let result: string = ''
     if (stderr) {
       result += stderr
       event.reply('client.execute.reply', result)
