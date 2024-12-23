@@ -4,6 +4,7 @@ import { IpcRenderer } from '../preload/preload'
 
 declare namespace NodeJS {
   interface ProcessEnv {
+    DEV: boolean
     CLIENT_PATH: string
     VITE_PORT: string
     APP_ROOT: string

@@ -78,6 +78,7 @@
     "electron": "^30.0.1",
     "electron-builder": "^24.13.3",
     "electron-log": "^5.2.4",
+    "electron-updater": "^6.3.9",
     "express": "^4.21.0",
     "glob": "^11.0.0",
     "monaco-editor": "npm:@codingame/monaco-vscode-editor-api@~7.0.7",

@@ -1,4 +1,5 @@
 export interface Settings {
+  version: string
   laravelPath: string
   php: string | ''
   theme: string

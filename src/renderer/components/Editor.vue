@@ -158,9 +158,9 @@
         resolve()
       }
 
-      webSocket.onmessage = message => {
-        console.log(message)
-      }
+      // webSocket.onmessage = message => {
+      //   console.log(message)
+      // }
 
       webSocket.onerror = error => {
         reject(error)

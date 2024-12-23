@@ -1,0 +1,4 @@
+root = true
+
+[*.{js,mjs,ts,tsx,jsx,yml,vue}]
+indent_size = 2

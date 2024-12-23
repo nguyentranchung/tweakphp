@@ -7,6 +7,7 @@
   import Container from '../components/Container.vue'
   import { useSettingsStore } from '../stores/settings'
   import { Tab } from '../types/tab.type'
+  import { History } from '../types/history.type'
 
   const tabsStore = useTabsStore()
   const historyStore = useHistoryStore()
@@ -21,11 +22,11 @@
     },
   })
 
-  const updateTab = (history: any) => {
+  const updateTab = (history: History) => {
     let tab: Tab = props.tab
     tab.type = 'code'
-    tab.path = history
-    tab.name = history.split('/').pop()
+    tab.path = history.path
+    tab.name = history.path.split('/').pop()
     tabsStore.updateTab(tab)
   }
 
@@ -39,11 +40,13 @@
       <Divider class="mt-3" />
       <div class="space-y-2 mt-3">
         <div class="flex items-center justify-between">
-          <button class="text-blue-500" @click="updateTab(settingsStore.settings.laravelPath)">laravel</button>
+          <button class="text-blue-500" @click="updateTab({ path: settingsStore.settings.laravelPath })">
+            laravel
+          </button>
         </div>
         <div class="flex items-center justify-between" v-for="history in historyStore.history">
           <button class="text-blue-500" @click="updateTab(history)">
-            {{ history }}
+            {{ history.path }}
           </button>
           <button>
             <TrashIcon @click="historyStore.removeHistory(history)" class="w-4 h-4 hover:text-red-600" />

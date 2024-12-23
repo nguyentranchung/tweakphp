@@ -18,6 +18,7 @@ const settingsPath = app.isPackaged
   : path.join(__dirname, 'settings.json')
 
 const defaultSettings: Settings = {
+  version: app.getVersion(),
   laravelPath: laravelPath,
   php: getPHPPath(),
   theme: 'dracula',
@@ -42,6 +43,7 @@ export const getSettings = () => {
   if (settingsRaw) {
     let settingsJson = JSON.parse(settingsRaw)
     settings = {
+      version: defaultSettings.version,
       laravelPath: settingsJson.laravelPath || defaultSettings.laravelPath,
       php: settingsJson.php || defaultSettings.php,
       theme: settingsJson.theme || defaultSettings.theme,
