@@ -226,7 +226,7 @@
         ref="resultEditor"
         :editor-id="`${tab.id}-result`"
         v-model:value="tab.result"
-        language="json"
+        language="output"
         :readonly="true"
         :wrap="true"
         :style="{

@@ -4,7 +4,7 @@
   import { MonacoLanguageClient } from 'monaco-languageclient'
   import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from 'vscode-ws-jsonrpc'
   import { CloseAction, ErrorAction } from 'vscode-languageclient'
-  import { installPHPLanguage, installThemes } from '../editor'
+  import { installPHPLanguage, installOutputLanguage, installThemes } from '../editor'
   import { useSettingsStore } from '../stores/settings'
 
   const settingsStore = useSettingsStore()
@@ -16,7 +16,7 @@
     },
     language: {
       type: String,
-      default: 'custom-php',
+      default: 'php',
     },
     readonly: {
       type: Boolean,
@@ -47,6 +47,10 @@
 
   if (props.language === 'php') {
     installPHPLanguage()
+  }
+
+  if (props.language === 'output') {
+    installOutputLanguage()
   }
 
   onMounted(async () => {

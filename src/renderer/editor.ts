@@ -19,6 +19,7 @@ export const installThemes = () => {
   monaco.editor.defineTheme('github-light', typedGithubLightTheme)
   monaco.editor.defineTheme('catppuccin', typedCatppuccinTheme)
 }
+
 export const installPHPLanguage = () => {
   monaco.languages.register({
     id: 'php',
@@ -391,6 +392,23 @@ export const installPHPLanguage = () => {
         start: new RegExp('^\\s*(#|//)region\\b'),
         end: new RegExp('^\\s*(#|//)endregion\\b'),
       },
+    },
+  })
+}
+
+export const installOutputLanguage = () => {
+  monaco.languages.register({ id: 'output' })
+  monaco.languages.setMonarchTokensProvider('output', {
+    tokenizer: {
+      root: [
+        [/{#\d+/, 'identifier'], // Matches `{#1234}` as an identifier
+        [/\bIlluminate\\\S+/, 'class'], // Matches classes like `Illuminate\Support\Collection`
+        [/\b(all|other-key):/, 'key'], // Matches keys like `all:`
+        [/".*?"/, 'string'], // Matches strings like `"saeed"`
+        [/\[|\]/, 'bracket'], // Matches square brackets
+        [/{|}/, 'delimiter'], // Matches curly braces
+        [/,/, 'comma'], // Matches commas
+      ],
     },
   })
 }
