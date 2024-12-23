@@ -48,7 +48,13 @@
       colorSchemeSetup()
     })
     window.ipcRenderer.on('update.available', (e: UpdateInfo) => {
-      updateStore.updateAvailable(e)
+      updateStore.setUpdate(e)
+    })
+    window.ipcRenderer.on('update.not-available', (e: UpdateInfo) => {
+      updateStore.setUpdate(e)
+    })
+    window.ipcRenderer.on('update.checking', (e: UpdateInfo) => {
+      updateStore.setChecking(true)
     })
     window.ipcRenderer.on('init.reply', async (e: any) => {
       isAppReady.value = true

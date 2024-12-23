@@ -13,7 +13,6 @@
   const saved = ref(false)
   const settingsStore = useSettingsStore()
   const updateStore = useUpdateStore()
-  const checkingForUpdates = ref(false)
 
   const saveSettings = () => {
     saved.value = true
@@ -24,7 +23,7 @@
   }
 
   const checkForUpdates = () => {
-    checkingForUpdates.value = true
+    updateStore.setChecking(true)
     window.ipcRenderer.send('update.check')
   }
 </script>
@@ -54,8 +53,9 @@
               <ArrowPathIcon class="w-5 h-5" />
             </PrimaryButton>
           </div>
-          <div v-else>
-            <button class="mr-2 text-sm underline" @click="checkForUpdates">Check for updates</button>
+          <div v-else class="mr-2 text-sm">
+            <span v-if="updateStore.checking">Checking...</span>
+            <button v-else class="underline" @click="checkForUpdates">Check for updates</button>
           </div>
         </div>
       </div>

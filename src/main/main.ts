@@ -18,6 +18,8 @@ const __dirname = path.dirname(__filename)
 
 dotenv.config()
 
+export let window: BrowserWindow
+
 app.whenReady().then(async () => {
   await lsp.init()
 
@@ -39,7 +41,7 @@ app.whenReady().then(async () => {
   ])
   tray.setContextMenu(contextMenu)
 
-  const window = new BrowserWindow({
+  window = new BrowserWindow({
     minWidth: 1100,
     minHeight: 700,
     width: 1100,
@@ -63,7 +65,7 @@ app.whenReady().then(async () => {
     await window.loadFile(path.join(__dirname, `./index.html`))
   }
 
-  updater.init(window)
+  await updater.init()
 
   ipcMain.on('init', async event => {
     await laravel.init()

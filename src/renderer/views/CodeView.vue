@@ -166,7 +166,7 @@
 <template>
   <Container v-if="tab && route.params.id" class="pt-[38px]">
     <div
-      class="min-w-full overflow-x-auto absolute top-[38px] flex h-7 border-b"
+      class="min-w-full max-w-full overflow-x-auto absolute top-[38px] flex h-7 border-b"
       :style="{
         backgroundColor: settingsStore.colors.background,
         borderColor: settingsStore.colors.border,
