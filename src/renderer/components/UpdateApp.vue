@@ -38,7 +38,9 @@
   <div>
     <div
       class="flex items-center"
-      v-if="updateStore.update && updateStore.update.version !== settingsStore.settings.version"
+      v-if="
+        updateStore.update && updateStore.isUpdateAvailable(settingsStore.settings.version, updateStore.update.version)
+      "
     >
       <button
         class="mr-2 text-sm underline"

@@ -129,7 +129,10 @@
         <div class="border-t" :style="{ borderColor: settingsStore.colors.border }">
           <SidebarItem :active="router.currentRoute.value.path === '/settings'" class="relative">
             <span
-              v-if="updateStore.update && updateStore.update.version !== settingsStore.settings.version"
+              v-if="
+                updateStore.update &&
+                updateStore.isUpdateAvailable(settingsStore.settings.version, updateStore.update.version)
+              "
               class="absolute top-[5px] right-[5px] bg-primary-500 text-white w-[7px] h-[7px] rounded-full"
             >
             </span>

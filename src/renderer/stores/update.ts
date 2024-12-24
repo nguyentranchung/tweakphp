@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { UpdateInfo } from 'electron-updater'
+import semver from 'semver'
 
 export const useUpdateStore = defineStore('update', () => {
   const update = ref<UpdateInfo>()
@@ -21,5 +22,13 @@ export const useUpdateStore = defineStore('update', () => {
     checking.value = value
   }
 
-  return { update, setUpdate, checking, setChecking }
+  const isUpdateAvailable = (currentVersion: string, newVersion?: string) => {
+    if (newVersion) {
+      return semver.gt(newVersion, currentVersion)
+    }
+
+    return false
+  }
+
+  return { update, setUpdate, checking, setChecking, isUpdateAvailable }
 })
