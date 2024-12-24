@@ -61,7 +61,7 @@
               >
                 <DialogTitle as="h3" class="text-lg font-medium leading-6 mb-5 flex items-center justify-between">
                   {{ props.title }}
-                  <XMarkIcon class="size-5 cursor-pointer hover:opacity-70" @click="closeModal()" />
+                  <XMarkIcon class="w-5 h-5 cursor-pointer hover:opacity-70" @click="closeModal()" />
                 </DialogTitle>
                 <slot />
               </DialogPanel>

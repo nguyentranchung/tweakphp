@@ -9,9 +9,9 @@
   import { UpdateInfo } from 'electron-updater'
 
   const changelogModal = ref()
-
   const settingsStore = useSettingsStore()
   const updateStore = useUpdateStore()
+  const updating = ref(false)
 
   const checkForUpdates = () => {
     updateStore.setChecking(true)
@@ -26,6 +26,11 @@
     if (update) {
       window.ipcRenderer.send('link.open', `https://github.com/tweakphp/tweakphp/releases/tag/v${update.releaseName}`)
     }
+  }
+
+  const update = () => {
+    updating.value = true
+    window.ipcRenderer.send('update.download')
   }
 </script>
 
@@ -42,8 +47,8 @@
       >
         Changelog
       </button>
-      <PrimaryButton v-tippy="`Update to ${updateStore.update.version}`">
-        <ArrowPathIcon class="w-5 h-5" />
+      <PrimaryButton v-tippy="`Update to ${updateStore.update.version}`" @click="update" :disabled="updating">
+        <ArrowPathIcon class="w-5 h-5" :class="{ 'animate-spin': updating }" />
       </PrimaryButton>
     </div>
     <div v-else class="mr-2 text-sm">
