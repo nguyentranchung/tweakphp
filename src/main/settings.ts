@@ -2,9 +2,8 @@ import { fileURLToPath } from 'url'
 import path from 'path'
 import * as fs from 'node:fs'
 import * as lsp from './lsp/index'
-import { app } from 'electron'
+import { app, ipcMain } from 'electron'
 import { Settings } from '../types/settings.type'
-import { getPHPPath } from './php'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -20,11 +19,15 @@ const settingsPath = app.isPackaged
 const defaultSettings: Settings = {
   version: app.getVersion(),
   laravelPath: laravelPath,
-  php: getPHPPath(),
+  php: '',
   theme: 'dracula',
   editorFontSize: 15,
   editorWordWrap: 'on',
   layout: 'vertical',
+}
+
+export const init = async () => {
+  ipcMain.on('settings.store', storeSettings)
 }
 
 export const storeSettings = async (_event: any, data: Settings) => {

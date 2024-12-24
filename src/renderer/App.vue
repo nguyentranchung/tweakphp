@@ -53,7 +53,7 @@
     window.ipcRenderer.on('update.not-available', (e: UpdateInfo) => {
       updateStore.setUpdate(e)
     })
-    window.ipcRenderer.on('update.checking', (e: UpdateInfo) => {
+    window.ipcRenderer.on('update.checking', () => {
       updateStore.setChecking(true)
     })
     window.ipcRenderer.on('init.reply', async (e: any) => {
@@ -77,11 +77,6 @@
     window.ipcRenderer.on('ssh.connect.reply', (e: any) => {
       events.dispatchEvent(new CustomEvent('ssh.connect.reply', { detail: e }))
     })
-    // window.ipcRenderer.send('php.path')
-    // window.ipcRenderer.on('php.path.reply', phpPath => {
-    //     settingsStore.settings.php = phpPath
-    //     settingsStore.update()
-    // })
     await initEditor()
   })
 

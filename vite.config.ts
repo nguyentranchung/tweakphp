@@ -5,7 +5,6 @@ import vue from '@vitejs/plugin-vue'
 import importMetaUrlPlugin from '@codingame/esbuild-import-meta-url-plugin'
 import vsixPlugin from '@codingame/monaco-vscode-rollup-vsix-plugin'
 import dotenv from 'dotenv'
-import { resolve } from 'path'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
