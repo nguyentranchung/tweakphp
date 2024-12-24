@@ -36,7 +36,6 @@ https://youtu.be/3KnzaQJK7NU?si=lHIb3GmZYyXiQ2cB
 
 ![CleanShot 2024-12-24 at 23 48 16@2x](https://github.com/user-attachments/assets/cb119abe-b576-4da2-a6c6-9445578828af)
 
-
 ## Setup Locally
 
 Install dependencies
