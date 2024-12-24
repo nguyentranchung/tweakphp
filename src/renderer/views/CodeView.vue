@@ -64,7 +64,6 @@
   }
 
   const infoReplyListener = (e: any) => {
-    console.log(e)
     tab.value.info = JSON.parse(e.detail)
     tabsStore.updateTab(tab.value)
   }
@@ -167,7 +166,7 @@
 <template>
   <Container v-if="tab && route.params.id" class="pt-[38px]">
     <div
-      class="min-w-full overflow-x-auto absolute top-[38px] flex h-7 border-b"
+      class="min-w-full max-w-full overflow-x-auto absolute top-[38px] flex h-7 border-b"
       :style="{
         backgroundColor: settingsStore.colors.background,
         borderColor: settingsStore.colors.border,
@@ -227,7 +226,7 @@
         ref="resultEditor"
         :editor-id="`${tab.id}-result`"
         v-model:value="tab.result"
-        language="json"
+        language="output"
         :readonly="true"
         :wrap="true"
         :style="{

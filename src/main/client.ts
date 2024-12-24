@@ -1,12 +1,17 @@
 import path from 'path'
 import { exec } from 'child_process'
-import { app } from 'electron'
+import { app, ipcMain } from 'electron'
 import * as settings from './settings'
 import * as php from './php'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+
+export const init = async () => {
+  ipcMain.on('client.execute', execute)
+  ipcMain.on('client.info', info)
+}
 
 function getClient() {
   const phpVersion = php.getVersion(settings.getSettings().php)
@@ -29,10 +34,9 @@ export const execute = async (event: Electron.IpcMainEvent, data: { code: string
 
   const path = `"${data.path}"`
 
+  console.log(`${phpPath} ${getClient()} ${path} execute ${code}`)
   exec(`${phpPath} ${getClient()} ${path} execute ${code}`, (stdout, stderr) => {
-    // format Y-m-d H:i:s
-    const date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
-    let result = '// ' + date + '\n'
+    let result: string = ''
     if (stderr) {
       result += stderr
       event.reply('client.execute.reply', result)

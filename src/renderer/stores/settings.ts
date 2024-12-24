@@ -28,6 +28,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const themes = ref(Object.keys(themeColors))
 
   let defaultSettings: Settings = {
+    version: '',
     laravelPath: '',
     php: '',
     theme: 'dracula',

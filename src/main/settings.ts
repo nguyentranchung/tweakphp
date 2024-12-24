@@ -2,10 +2,12 @@ import { fileURLToPath } from 'url'
 import path from 'path'
 import * as fs from 'node:fs'
 import * as lsp from './lsp/index'
-import { app } from 'electron'
+import { app, ipcMain } from 'electron'
 import { Settings } from '../types/settings.type'
-import { getPHPPath } from './php'
+import * as php from './php'
+import os from 'os'
 
+const homeDir = os.homedir()
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -13,17 +15,25 @@ const laravelPath = app.isPackaged
   ? path.join(process.resourcesPath, 'public/laravel')
   : path.join(__dirname, 'laravel')
 
-const settingsPath = app.isPackaged
-  ? path.join(process.resourcesPath, `settings.json`)
-  : path.join(__dirname, 'settings.json')
+const settingsDir = path.join(homeDir, '.tweakphp')
+if (app.isPackaged && !fs.existsSync(settingsDir)) {
+  fs.mkdirSync(settingsDir, { recursive: true })
+}
+
+const settingsPath = app.isPackaged ? path.join(settingsDir, 'settings.json') : path.join(__dirname, 'settings.json')
 
 const defaultSettings: Settings = {
+  version: app.getVersion(),
   laravelPath: laravelPath,
-  php: getPHPPath(),
+  php: app.isPackaged ? '' : php.getPHPPath(),
   theme: 'dracula',
   editorFontSize: 15,
   editorWordWrap: 'on',
   layout: 'vertical',
+}
+
+export const init = async () => {
+  ipcMain.on('settings.store', storeSettings)
 }
 
 export const storeSettings = async (_event: any, data: Settings) => {
@@ -42,6 +52,7 @@ export const getSettings = () => {
   if (settingsRaw) {
     let settingsJson = JSON.parse(settingsRaw)
     settings = {
+      version: defaultSettings.version,
       laravelPath: settingsJson.laravelPath || defaultSettings.laravelPath,
       php: settingsJson.php || defaultSettings.php,
       theme: settingsJson.theme || defaultSettings.theme,

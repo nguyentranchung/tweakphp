@@ -6,6 +6,7 @@
   import SelectInput from '../components/SelectInput.vue'
   import TextInput from '../components/TextInput.vue'
   import { ref } from 'vue'
+  import UpdateApp from '../components/UpdateApp.vue'
 
   const saved = ref(false)
   const settingsStore = useSettingsStore()
@@ -21,12 +22,20 @@
 
 <template>
   <Container class="pt-[38px]">
-    <div class="max-w-xl mx-auto p-10">
+    <div class="max-w-2xl mx-auto p-10">
       <div class="flex items-center justify-between">
         <Title>Settings</Title>
         <span :class="{ 'opacity-0': !saved, 'opacity-65': saved }" class="transition-all duration-300"
           >Changes Saved</span
         >
+      </div>
+      <Divider class="mt-3" />
+      <div class="mt-3 grid grid-cols-2 items-center">
+        <div>App version</div>
+        <div class="flex items-center justify-between">
+          {{ settingsStore.settings.version }}
+          <UpdateApp />
+        </div>
       </div>
       <Divider class="mt-3" />
       <div class="mt-3 grid grid-cols-2 items-center">

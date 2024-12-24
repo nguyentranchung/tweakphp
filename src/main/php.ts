@@ -2,12 +2,6 @@ import { execSync } from 'child_process'
 
 let cachedPhpPath: string | null = null
 
-import { IpcMainEvent } from 'electron'
-
-export const path = async (event: IpcMainEvent) => {
-  event.reply('php.path.reply', getPHPPath())
-}
-
 export const getPHPPath = () => {
   if (cachedPhpPath) {
     return cachedPhpPath

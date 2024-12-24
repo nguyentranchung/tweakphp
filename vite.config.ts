@@ -2,10 +2,13 @@ import { defineConfig } from 'vite'
 import path from 'node:path'
 import electron from 'vite-plugin-electron/simple'
 import vue from '@vitejs/plugin-vue'
-import viteClientsPlugin from './vite.clients.plugin'
 import importMetaUrlPlugin from '@codingame/esbuild-import-meta-url-plugin'
 import vsixPlugin from '@codingame/monaco-vscode-rollup-vsix-plugin'
 import dotenv from 'dotenv'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 dotenv.config()
 

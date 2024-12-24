@@ -1,34 +1,30 @@
-import { ref } from 'vue'
+import { Ref, ref } from 'vue'
 import { defineStore } from 'pinia'
+import { History } from '../types/history.type'
 
 export const useHistoryStore = defineStore('history', () => {
-  let defaultHistory = []
+  let defaultHistory: History[] = []
   let storedHistory = localStorage.getItem('history')
   if (storedHistory) {
-    defaultHistory = JSON.parse(storedHistory)
+    JSON.parse(storedHistory).forEach((item: any) => {
+      defaultHistory.push({
+        path: item.path ?? item,
+      })
+    })
   }
-  const history = ref(defaultHistory)
+  const history: Ref<History[]> = ref(defaultHistory)
 
-  interface HistoryItem {
-    path: string
-  }
-
-  const addHistory = (path: string): void => {
+  const addHistory = (h: History): void => {
     // history must be unique
-    let exists = history.value.find((item: HistoryItem) => item.path === path)
-    if (exists) {
-      return
+    let index = history.value.findIndex((item: History) => item.path === h.path)
+    if (index === -1) {
+      history.value.push(h)
+      localStorage.setItem('history', JSON.stringify(history.value))
     }
-    history.value.push(path)
-    localStorage.setItem('history', JSON.stringify(history.value))
   }
 
-  interface RemoveHistory {
-    (path: string): void
-  }
-
-  const removeHistory: RemoveHistory = (path: string): void => {
-    let index = history.value.findIndex((item: HistoryItem) => item.path === path)
+  const removeHistory = (h: History): void => {
+    let index = history.value.findIndex((item: History) => item === h)
     if (index === -1) {
       return
     }
