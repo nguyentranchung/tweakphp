@@ -24,11 +24,6 @@ export default defineConfig({
     host: '127.0.0.1',
     port: parseInt(process.env.VITE_PORT || '54332'),
   },
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, 'src/'),
-    },
-  },
   plugins: [
     vue(),
     vsixPlugin(),

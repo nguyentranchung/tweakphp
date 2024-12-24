@@ -8,6 +8,7 @@ import * as php from './php'
 import * as lsp from './lsp/index'
 import * as laravel from './laravel'
 import * as updater from './updater'
+import * as link from './link'
 import log from 'electron-log/main'
 import * as dotenv from 'dotenv'
 
@@ -66,6 +67,7 @@ app.whenReady().then(async () => {
   }
 
   await updater.init()
+  await link.init()
 
   ipcMain.on('init', async event => {
     await laravel.init()

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { ArrowPathIcon } from '@heroicons/vue/24/outline'
   import Container from '../components/Container.vue'
   import Title from '../components/Title.vue'
   import Divider from '../components/Divider.vue'
@@ -7,12 +6,10 @@
   import SelectInput from '../components/SelectInput.vue'
   import TextInput from '../components/TextInput.vue'
   import { ref } from 'vue'
-  import PrimaryButton from '../components/PrimaryButton.vue'
-  import { useUpdateStore } from '../stores/update'
+  import UpdateApp from '../components/UpdateApp.vue'
 
   const saved = ref(false)
   const settingsStore = useSettingsStore()
-  const updateStore = useUpdateStore()
 
   const saveSettings = () => {
     saved.value = true
@@ -20,11 +17,6 @@
     setTimeout(() => {
       saved.value = false
     }, 2000)
-  }
-
-  const checkForUpdates = () => {
-    updateStore.setChecking(true)
-    window.ipcRenderer.send('update.check')
   }
 </script>
 
@@ -42,21 +34,7 @@
         <div>App version</div>
         <div class="flex items-center justify-between">
           {{ settingsStore.settings.version }}
-          <div
-            class="flex items-center"
-            v-if="updateStore.update && updateStore.update.version !== settingsStore.settings.version"
-          >
-            <button class="mr-2 text-sm underline" v-tippy="`Version ${updateStore.update.version} changelog`">
-              Changelog
-            </button>
-            <PrimaryButton v-tippy="`Update to ${updateStore.update.version}`">
-              <ArrowPathIcon class="w-5 h-5" />
-            </PrimaryButton>
-          </div>
-          <div v-else class="mr-2 text-sm">
-            <span v-if="updateStore.checking">Checking...</span>
-            <button v-else class="underline" @click="checkForUpdates">Check for updates</button>
-          </div>
+          <UpdateApp />
         </div>
       </div>
       <Divider class="mt-3" />
