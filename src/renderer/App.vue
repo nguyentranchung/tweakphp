@@ -14,6 +14,7 @@
   import { initServices } from 'monaco-languageclient/vscode/services'
   import { useUpdateStore } from './stores/update'
   import { UpdateInfo } from 'electron-updater'
+  import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override'
 
   const colorSchemeStore = useColorSchemeStore()
   const colorSchemeSetup = () => {
@@ -85,11 +86,12 @@
   }
 
   const initEditor = async () => {
-    await initServices({
-      serviceConfig: {
-        debugLogging: true,
+    await initServices(
+      {
+        serviceOverrides: getConfigurationServiceOverride(),
       },
-    })
+      {}
+    )
   }
 </script>
 

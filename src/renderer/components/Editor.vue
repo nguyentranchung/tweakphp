@@ -191,9 +191,7 @@
           closed: () => ({ action: CloseAction.DoNotRestart }),
         },
       },
-      connectionProvider: {
-        get: () => Promise.resolve(messageTransports),
-      },
+      messageTransports,
     })
   }
 
