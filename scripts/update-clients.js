@@ -1,14 +1,23 @@
 import path from 'path'
 import fs from 'fs'
 import fetch from 'node-fetch'
-import * as glob from 'glob'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 function cleanup() {
-  const files = glob.sync(path.join(__dirname, '../public', 'client-*.phar'))
+  const directoryPath = path.join(__dirname, '../public')
+  const prefix = 'client-'
+  const suffix = '.phar'
+
+  // Get all files in the directory
+  const files = fs
+    .readdirSync(directoryPath)
+    .filter(file => file.startsWith(prefix) && file.endsWith(suffix))
+    .map(file => path.join(directoryPath, file)) // Convert to full paths
+
+  // Delete the matching files
   files.forEach(file => {
     fs.unlinkSync(file)
   })
