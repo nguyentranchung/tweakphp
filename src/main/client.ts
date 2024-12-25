@@ -34,7 +34,6 @@ export const execute = async (event: Electron.IpcMainEvent, data: { code: string
 
   const path = `"${data.path}"`
 
-  console.log(`${phpPath} ${getClient()} ${path} execute ${code}`)
   exec(`${phpPath} ${getClient()} ${path} execute ${code}`, (stdout, stderr) => {
     let result: string = ''
     if (stderr) {
