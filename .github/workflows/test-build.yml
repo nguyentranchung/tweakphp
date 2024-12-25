@@ -1,4 +1,4 @@
-name: code-style
+name: test-build
 
 on:
   push:
