@@ -14,6 +14,7 @@
   import { initServices } from 'monaco-languageclient/vscode/services'
   import { useUpdateStore } from './stores/update'
   import { UpdateInfo } from 'electron-updater'
+  import DockerIcon from './components/icons/DockerIcon.vue'
 
   const colorSchemeStore = useColorSchemeStore()
   const colorSchemeSetup = () => {
@@ -116,6 +117,18 @@
               <FolderOpenIcon @click="openFolder" class="w-6 h-6 hover:text-primary-500" />
             </RouterLink>
           </SidebarItem>
+          <SidebarItem
+            :disabled="tabStore.current?.type === 'home'"
+            :active="router.currentRoute.value.path.includes('/docker')"
+          >
+            <RouterLink v-if="tabStore.current?.type !== 'home'" to="/docker">
+              <DockerIcon class="w-6 h-6 fill-transparent hover:text-primary-500" />
+            </RouterLink>
+            <span v-else class="w-6 h-6 opacity-70 cursor-not-allowed">
+              <DockerIcon class="fill-transparent" />
+            </span>
+          </SidebarItem>
+
           <!--                    <SidebarItem-->
           <!--                        :active="-->
           <!--                            router.currentRoute.value.path.includes('/ssh')-->

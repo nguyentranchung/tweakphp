@@ -11,6 +11,7 @@
   import { useRoute } from 'vue-router'
   import router from '../router/index'
   import { Tab } from '../types/tab.type'
+  import DockerTabConnection from '../components/DockerTabConnection.vue'
 
   const settingsStore = useSettingsStore()
   const executeStore = useExecuteStore()
@@ -24,11 +25,19 @@
     name: '',
     code: '',
     path: '',
+    remote_phar_client: '',
+    remote_path: '',
     result: '',
     info: {
       name: '',
       php_version: '',
       version: '',
+    },
+    docker: {
+      php: '',
+      enable: false,
+      container_id: '',
+      container_name: '',
     },
   })
   const route = useRoute()
@@ -70,10 +79,13 @@
 
   const executeHandler = () => {
     executeStore.setExecuting(true)
+
     window.ipcRenderer.send('client.execute', {
-      php: settingsStore.settings.php,
+      php: tab.value.docker?.enable ? tab.value.docker.php: settingsStore.settings.php,
       code: tab.value.code,
-      path: tab.value.path,
+      path: tab.value.docker?.enable ? tab.value.remote_path : tab.value.path,
+      phar_client: tab.value.docker?.enable ? tab.value.remote_phar_client : '',
+      docker_container_id: tab.value.docker?.enable ? tab.value.docker.container_id : '',
     })
   }
 
@@ -98,6 +110,7 @@
       await router.replace({ name: 'code', params: { id: currentTab.id } })
     } else {
       tab.value = currentTab
+      tabsStore.setCurrent(currentTab)
 
       infoHandler()
 
@@ -161,6 +174,11 @@
     let activeTab = tabsStore.addTab()
     await router.replace({ name: 'code', params: { id: activeTab.id } })
   }
+
+  const setCurrentTab = async (t: Tab) => {
+    tabsStore.setCurrent(t)
+    await router.replace({ name: 'code', params: { id: t.id } })
+  }
 </script>
 
 <template>
@@ -181,10 +199,7 @@
         v-for="t in tabsStore.tabs"
         @mousedown.middle="removeTab(t)"
       >
-        <button
-          class="h-full w-full flex items-center px-2 text-xs cursor-pointer"
-          @click="router.replace({ name: 'code', params: { id: t.id } })"
-        >
+        <button class="h-full w-full flex items-center px-2 text-xs cursor-pointer" @click="setCurrentTab(t)">
           {{ t.name }}
         </button>
         <button class="h-full w-6 flex flex-none items-center justify-center" @click="removeTab(t)">
@@ -241,7 +256,10 @@
           backgroundColor: settingsStore.colors.background,
         }"
       >
-        <div class="px-2">PHP {{ tab.info.php_version }}</div>
+        <div class="flex gap-2">
+          <div class="px-2">PHP {{ tab.info.php_version }}</div>
+          <DockerTabConnection :tab="tab" />
+        </div>
         <div class="px-2">{{ tab.info.name }} {{ tab.info.version }}</div>
       </div>
     </div>
