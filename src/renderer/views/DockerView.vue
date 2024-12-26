@@ -177,6 +177,7 @@
             </div>
             <div class="w-10">
               <ArrowPathIcon
+                :spin="true"
                 @click="listDockerContainer"
                 :class="{ 'animate-spin': loading }"
                 class="w-6 cursor-pointer h-6 hover:text-primary-500"

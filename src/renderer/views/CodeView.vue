@@ -79,7 +79,7 @@
     tabsStore.updateTab(tab.value)
   }
 
-  window.ipcRenderer.on('docker-install-phar-client-response', (e: { phar: string; container_id: never }) => {
+  window.ipcRenderer.on('docker-install-phar-client-response', (e: { phar: string; container_id: string }) => {
     e.container_id && dockerClients.value.push(e.container_id)
   })
 
