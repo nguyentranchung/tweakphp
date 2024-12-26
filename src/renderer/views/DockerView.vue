@@ -63,6 +63,7 @@
   }
 
   const handleDockerTestConnectionResponse = (e: { phpVersion: string; phpPath: string }) => {
+    loading.value = false
     phpVersion.value = e.phpVersion
     phpPath.value = e.phpPath
     shouldConnect.value = true
@@ -103,7 +104,7 @@
     listDockerContainer()
 
     window.ipcRenderer.on('docker-ps-response', e => {
-      containers.value = e
+      containers.value = e || []
       loading.value = false
     })
 
@@ -180,7 +181,7 @@
         </div>
         <Divider />
 
-        <div v-if="containers.length > 0" class="space-y-3">
+        <div v-if="Object.values(containers).length > 0" class="space-y-3">
           <div class="grid grid-cols-2 items-center">
             <div>PHP Version</div>
             {{ phpVersion ?? '--' }}
