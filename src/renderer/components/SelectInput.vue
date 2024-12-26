@@ -5,6 +5,7 @@
   // Define props
   const props = defineProps({
     modelValue: [String, Number],
+    placeholder: [String],
   })
 
   const settingsStore = useSettingsStore()
@@ -29,16 +30,21 @@
 </script>
 
 <template>
-  <select
-    v-model="selectedValue"
-    @change="emitChange"
-    class="h-[31px] border-r-8 border-transparent py-1 px-2 outline focus:!outline-primary-500 rounded-md"
-    :style="{
-      backgroundColor: settingsStore.colors.backgroundLight,
-      color: settingsStore.colors.foreground,
-      outlineColor: settingsStore.colors.border,
-    }"
-  >
-    <slot></slot>
-  </select>
+  <div>
+    <select
+      v-model="selectedValue"
+      @change="emitChange"
+      class="!w-full h-[31px] border-r-8 border-transparent py-1 px-2 outline focus:!outline-primary-500 rounded-md"
+      :style="{
+        backgroundColor: settingsStore.colors.backgroundLight,
+        color: settingsStore.colors.foreground,
+        outlineColor: settingsStore.colors.border,
+      }"
+    >
+      <option value="" selected>
+        {{ placeholder }}
+      </option>
+      <slot></slot>
+    </select>
+  </div>
 </template>
