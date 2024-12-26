@@ -18,7 +18,7 @@
   const tabsStore = useTabsStore()
   const codeEditor = ref(null)
   const resultEditor = ref<InstanceType<typeof Editor> | null>(null)
-  const dockerClients: Ref<string[]> = ref([]);
+  const dockerClients: Ref<string[]> = ref([])
 
   const tab = ref<Tab>({
     id: 0,
@@ -79,7 +79,7 @@
     tabsStore.updateTab(tab.value)
   }
 
-  window.ipcRenderer.on('docker-install-phar-client-response', (e: { phar: string; container_id: never }) => {
+  window.ipcRenderer.on('docker-install-phar-client-response', (e: { phar: string; container_id: string }) => {
     e.container_id && dockerClients.value.push(e.container_id)
   })
 
