@@ -124,7 +124,7 @@
             <RouterLink v-if="tabStore.current?.type !== 'home'" to="/docker">
               <DockerIcon class="w-6 h-6 fill-transparent hover:text-primary-500" />
             </RouterLink>
-            <span v-else class="w-6 h-6 opacity-70 cursor-not-allowed">
+            <span v-else class="w-6 h-6 opacity-70 cursor-not-allowed" v-tippy="{ content: 'Open a project first!', placement: 'right'}">
               <DockerIcon class="fill-transparent" />
             </span>
           </SidebarItem>
