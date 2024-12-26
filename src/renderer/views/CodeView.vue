@@ -81,7 +81,7 @@
     executeStore.setExecuting(true)
 
     window.ipcRenderer.send('client.execute', {
-      php: tab.value.docker?.enable ? tab.value.docker.php: settingsStore.settings.php,
+      php: tab.value.docker?.enable ? tab.value.docker.php : settingsStore.settings.php,
       code: tab.value.code,
       path: tab.value.docker?.enable ? tab.value.remote_path : tab.value.path,
       phar_client: tab.value.docker?.enable ? tab.value.remote_phar_client : '',

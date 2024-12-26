@@ -30,15 +30,15 @@ export const execute = async (
   event: Electron.IpcMainEvent,
   data: { code: string; php: string; path: string; phar_client: string; docker_container_id: string }
 ) => {
-  const phpPath = `"${data.php}"`;
-  const path = `"${data.path}"`;
-  const code = btoa(data.code.replaceAll('<?php', ''));
+  const phpPath = `"${data.php}"`
+  const path = `"${data.path}"`
+  const code = btoa(data.code.replaceAll('<?php', ''))
 
-  const pharClient = data.docker_container_id ? data.phar_client : getClient();
+  const pharClient = data.docker_container_id ? data.phar_client : getClient()
 
   const command = data.docker_container_id
     ? `docker exec ${data.docker_container_id} ${phpPath} ${pharClient} ${path} execute ${code}`
-    : `${phpPath} ${pharClient} ${path} execute ${code}`;
+    : `${phpPath} ${pharClient} ${path} execute ${code}`
 
   console.log(command)
 

@@ -68,7 +68,7 @@
     shouldConnect.value = true
 
     if (!created.value) {
-       dockerEnabled.value = true
+      dockerEnabled.value = true
     }
   }
 
