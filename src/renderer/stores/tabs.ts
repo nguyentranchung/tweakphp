@@ -10,6 +10,8 @@ export const useTabsStore = defineStore('tabs', () => {
       type: 'home',
       name: 'home',
       path: '',
+      remote_path: '',
+      remote_phar_client: '',
       code: '<?php\n\n',
       result: '',
       info: {
@@ -17,13 +19,28 @@ export const useTabsStore = defineStore('tabs', () => {
         version: '',
         php_version: '',
       },
+      docker: {
+        enable: false,
+        php: '',
+        container_name: '',
+        container_id: '',
+        php_version: '',
+      },
     },
   ]
   let storedTabs = localStorage.getItem('tabs')
   if (storedTabs) {
-    defaultTabs = JSON.parse(storedTabs)
+    defaultTabs = JSON.parse(storedTabs).map((tab: any) => ({
+      ...tab,
+      docker: tab.docker || defaultTabs[0].docker,
+    }))
   }
   const tabs: Ref<Tab[]> = ref(defaultTabs)
+  const current: Ref<Tab | null> = ref(null)
+
+  const setCurrent = (tab: Tab) => {
+    current.value = tab
+  }
 
   const addTab = (data: { id?: number | null; type: string; path?: string } = { type: 'home' }) => {
     if (!data.id) {
@@ -34,11 +51,20 @@ export const useTabsStore = defineStore('tabs', () => {
       type: data.type,
       name: data.type === 'home' ? 'home' : data.path?.split('/').pop(),
       path: data.path,
+      remote_phar_client: '',
+      remote_path: '',
       code: '<?php\n\n',
       result: '',
       info: {
         name: '',
         version: '',
+        php_version: '',
+      },
+      docker: {
+        enable: false,
+        php: '',
+        container_id: '',
+        container_name: '',
         php_version: '',
       },
     }
@@ -48,6 +74,7 @@ export const useTabsStore = defineStore('tabs', () => {
     }
     tabs.value.push(tab)
     localStorage.setItem('tabs', JSON.stringify(tabs.value))
+    setCurrent(tab)
     return tab
   }
 
@@ -56,6 +83,7 @@ export const useTabsStore = defineStore('tabs', () => {
     tabs.value.splice(index, 1)
     localStorage.setItem('tabs', JSON.stringify(tabs.value))
     if (tabs.value.length > 0) {
+      setCurrent(tabs.value[tabs.value.length - 1])
       return tabs.value[tabs.value.length - 1]
     }
     return addTab({
@@ -67,8 +95,11 @@ export const useTabsStore = defineStore('tabs', () => {
 
   const updateTab = (tab: Tab) => {
     let index = tabs.value.findIndex(t => t.id === tab.id)
-    tabs.value[index] = tab
-    localStorage.setItem('tabs', JSON.stringify(tabs.value))
+
+    if (index !== -1) {
+      tabs.value[index] = { ...tab }
+      localStorage.setItem('tabs', JSON.stringify(tabs.value))
+    }
   }
 
   const findTab = (id: number | null = null) => {
@@ -92,9 +123,11 @@ export const useTabsStore = defineStore('tabs', () => {
 
   return {
     tabs,
+    current,
     addTab,
     removeTab,
     updateTab,
     findTab,
+    setCurrent,
   }
 })

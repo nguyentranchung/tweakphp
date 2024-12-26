@@ -11,6 +11,7 @@ import * as laravel from './laravel'
 import * as updater from './updater'
 import * as link from './link'
 import * as tray from './tray'
+import * as docker from './docker'
 
 Object.assign(console, log.functions)
 
@@ -53,6 +54,7 @@ app.whenReady().then(async () => {
     })
   })
 
+  await docker.init()
   await tray.init()
   await lsp.init()
   await updater.init()

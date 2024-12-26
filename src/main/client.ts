@@ -4,16 +4,18 @@ import { app, ipcMain } from 'electron'
 import * as settings from './settings'
 import * as php from './php'
 import { fileURLToPath } from 'url'
+import { DOCKER_MACOS_PATH } from './docker.ts'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 export const init = async () => {
-  ipcMain.on('client.execute', execute)
-  ipcMain.on('client.info', info)
+  ipcMain.on('client.local.execute', localExec)
+  ipcMain.on('client.local.info', info)
+  ipcMain.on('client.docker.execute', dockerExec)
 }
 
-function getClient() {
+export function getLocalPharClient() {
   const phpVersion = php.getVersion(settings.getSettings().php)
   if (app.isPackaged) {
     return path.join(process.resourcesPath, `public/client-${phpVersion}.phar`)
@@ -26,26 +28,44 @@ function getClient() {
   return path.join(__dirname, `../public/client-${phpVersion}.phar`)
 }
 
-export const execute = async (event: Electron.IpcMainEvent, data: { code: string; php: string; path: string }) => {
-  let code = data.code.replaceAll('<?php', '')
-  code = btoa(code)
-
+export const dockerExec = async (
+  event: Electron.IpcMainEvent,
+  data: { code: string; php: string; path: string; phar_client: string; container_id: string }
+) => {
   const phpPath = `"${data.php}"`
-
   const path = `"${data.path}"`
+  const code = btoa(data.code.replaceAll('<?php', ''))
 
-  exec(`${phpPath} ${getClient()} ${path} execute ${code}`, (stdout, stderr) => {
+  const pharClient = `"${data.phar_client}"`
+
+  const command = `${DOCKER_MACOS_PATH} exec ${data.container_id} ${phpPath} ${pharClient} ${path} execute ${code}`
+
+  await execute(event, command)
+}
+
+export const localExec = async (event: Electron.IpcMainEvent, data: { code: string; php: string; path: string }) => {
+  const phpPath = `"${data.php}"`
+  const path = `"${data.path}"`
+  const code = btoa(data.code.replaceAll('<?php', ''))
+
+  const command = `${phpPath} ${getLocalPharClient()} ${path} execute ${code}`
+
+  await execute(event, command)
+}
+
+export const execute = async (event: Electron.IpcMainEvent, command: string) => {
+  exec(command, (stdout, stderr) => {
     let result: string = ''
+
     if (stderr) {
       result += stderr
       event.reply('client.execute.reply', result)
       return
     }
-    result += stdout
 
+    result += stdout
     result = result.trim()
 
-    // Remove surrounding double quotes if present
     if (result.startsWith('"') && result.endsWith('"')) {
       result = result.slice(1, -1)
     }
@@ -55,7 +75,7 @@ export const execute = async (event: Electron.IpcMainEvent, data: { code: string
 }
 
 export const info = async (event: Electron.IpcMainEvent, data: { php: string; path: string }) => {
-  exec(`"${data.php}" ${getClient()} ${data.path} info`, (error, stdout) => {
+  exec(`"${data.php}" ${getLocalPharClient()} ${data.path} info`, (error, stdout) => {
     if (error) {
       event.reply('client.info.reply', error.message)
       return
