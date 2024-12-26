@@ -26,27 +26,34 @@ function getClient() {
   return path.join(__dirname, `../public/client-${phpVersion}.phar`)
 }
 
-export const execute = async (event: Electron.IpcMainEvent, data: { code: string; php: string; path: string }) => {
-  let code = data.code.replaceAll('<?php', '')
-  code = btoa(code)
+export const execute = async (
+  event: Electron.IpcMainEvent,
+  data: { code: string; php: string; path: string; phar_client: string; docker_container_id: string }
+) => {
+  const phpPath = `"${data.php}"`;
+  const path = `"${data.path}"`;
+  const code = btoa(data.code.replaceAll('<?php', ''));
 
-  const phpPath = `"${data.php}"`
+  const pharClient = data.docker_container_id ? data.phar_client : getClient();
 
-  const path = `"${data.path}"`
+  const command = data.docker_container_id
+    ? `docker exec ${data.docker_container_id} ${phpPath} ${pharClient} ${path} execute ${code}`
+    : `${phpPath} ${pharClient} ${path} execute ${code}`;
 
-  console.log(`${phpPath} ${getClient()} ${path} execute ${code}`)
-  exec(`${phpPath} ${getClient()} ${path} execute ${code}`, (stdout, stderr) => {
+  console.log(command)
+
+  exec(command, (stdout, stderr) => {
     let result: string = ''
+
     if (stderr) {
       result += stderr
       event.reply('client.execute.reply', result)
       return
     }
-    result += stdout
 
+    result += stdout
     result = result.trim()
 
-    // Remove surrounding double quotes if present
     if (result.startsWith('"') && result.endsWith('"')) {
       result = result.slice(1, -1)
     }
