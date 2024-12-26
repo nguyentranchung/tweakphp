@@ -33,7 +33,7 @@ export const useTabsStore = defineStore('tabs', () => {
     defaultTabs = JSON.parse(storedTabs).map((tab: any) => ({
       ...tab,
       docker: tab.docker || defaultTabs[0].docker,
-    }));
+    }))
   }
   const tabs: Ref<Tab[]> = ref(defaultTabs)
   const current: Ref<Tab | null> = ref(null)
