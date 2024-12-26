@@ -78,10 +78,10 @@
   }
 
   const executeHandler = () => {
-    const { docker, code, path, remote_path, remote_phar_client } = tab.value;
-    const { php, container_id } = docker || {};
+    const { docker, code, path, remote_path, remote_phar_client } = tab.value
+    const { php, container_id } = docker || {}
 
-    executeStore.setExecuting(true);
+    executeStore.setExecuting(true)
 
     if (docker.enable) {
       window.ipcRenderer.send('client.docker.execute', {
@@ -90,17 +90,17 @@
         path: remote_path,
         phar_client: remote_phar_client,
         container_id,
-      });
+      })
 
-      return;
+      return
     }
 
     window.ipcRenderer.send('client.local.execute', {
       php: settingsStore.settings.php,
       code,
       path,
-    });
-  };
+    })
+  }
 
   const infoHandler = () => {
     if (tab.value.type === 'code' && tab.value.info.name === '') {

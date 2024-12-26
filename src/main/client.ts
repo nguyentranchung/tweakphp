@@ -42,10 +42,7 @@ export const dockerExec = async (
   await execute(event, command)
 }
 
-export const localExec = async (
-  event: Electron.IpcMainEvent,
-  data: { code: string; php: string; path: string; }
-) => {
+export const localExec = async (event: Electron.IpcMainEvent, data: { code: string; php: string; path: string }) => {
   const phpPath = `"${data.php}"`
   const path = `"${data.path}"`
   const code = btoa(data.code.replaceAll('<?php', ''))
