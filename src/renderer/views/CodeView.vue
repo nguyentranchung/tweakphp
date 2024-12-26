@@ -87,11 +87,13 @@
   }
 
   onMounted(async () => {
-    if (settingsStore.settings.php === '') {
-      router.push({ name: 'settings' })
-      alert('PHP path is not set!')
-      return
-    }
+    setTimeout(async () => {
+      if (settingsStore.settings.php === '') {
+        await router.push({ name: 'settings' })
+        alert('PHP path is not set!')
+        return
+      }
+    }, 500);
     let params: any = route.params
     let currentTab = tabsStore.findTab(params.id)
     if (currentTab.id !== parseInt(params.id)) {
