@@ -40,8 +40,6 @@ export const execute = async (
     ? `docker exec ${data.docker_container_id} ${phpPath} ${pharClient} ${path} execute ${code}`
     : `${phpPath} ${pharClient} ${path} execute ${code}`
 
-  console.log(command)
-
   exec(command, (stdout, stderr) => {
     let result: string = ''
 
