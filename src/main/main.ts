@@ -47,6 +47,8 @@ app.whenReady().then(async () => {
     await window.loadFile(path.join(__dirname, `./index.html`))
   }
 
+  window.setMenuBarVisibility(false);
+
   ipcMain.on('init', async event => {
     await laravel.init()
     await updater.checkForUpdates()
