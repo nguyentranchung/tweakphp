@@ -34,6 +34,7 @@ app.whenReady().then(async () => {
     titleBarStyle: 'hiddenInset',
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
+      devTools: !app.isPackaged,
     },
     alwaysOnTop: false,
     center: true,
@@ -65,7 +66,9 @@ app.whenReady().then(async () => {
 })
 
 app.on('window-all-closed', () => {
-  app.quit()
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
 })
 
 app.on('before-quit', async () => {
