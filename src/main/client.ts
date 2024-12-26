@@ -4,6 +4,7 @@ import { app, ipcMain } from 'electron'
 import * as settings from './settings'
 import * as php from './php'
 import { fileURLToPath } from 'url'
+import { DOCKER_MACOS_PATH } from './docker.ts'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -37,7 +38,7 @@ export const dockerExec = async (
 
   const pharClient = `"${data.phar_client}"`
 
-  const command = `docker exec ${data.container_id} ${phpPath} ${pharClient} ${path} execute ${code}`
+  const command = `${DOCKER_MACOS_PATH} exec ${data.container_id} ${phpPath} ${pharClient} ${path} execute ${code}`
 
   await execute(event, command)
 }

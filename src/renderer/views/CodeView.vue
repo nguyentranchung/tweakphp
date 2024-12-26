@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+  import { nextTick, onBeforeUnmount, onMounted, Ref, ref, watch } from 'vue'
   import { useExecuteStore } from '../stores/execute'
   import { useTabsStore } from '../stores/tabs'
   import { XMarkIcon, PlusIcon } from '@heroicons/vue/24/outline'
@@ -18,6 +18,7 @@
   const tabsStore = useTabsStore()
   const codeEditor = ref(null)
   const resultEditor = ref<InstanceType<typeof Editor> | null>(null)
+  const dockerClients: Ref<string[]> = ref([]);
 
   const tab = ref<Tab>({
     id: 0,
@@ -38,6 +39,7 @@
       enable: false,
       container_id: '',
       container_name: '',
+      php_version: '',
     },
   })
   const route = useRoute()
@@ -77,13 +79,24 @@
     tabsStore.updateTab(tab.value)
   }
 
+  window.ipcRenderer.on('docker-install-phar-client-response', (e: { phar: string; container_id: never }) => {
+    e.container_id && dockerClients.value.push(e.container_id)
+  })
+
   const executeHandler = () => {
     const { docker, code, path, remote_path, remote_phar_client } = tab.value
-    const { php, container_id } = docker || {}
+    const { php, container_id, php_version } = docker || {}
 
     executeStore.setExecuting(true)
 
     if (docker.enable) {
+      if (!dockerClients.value.includes(container_id)) {
+        window.ipcRenderer.send('docker-install-phar-client', {
+          phpVersion: php_version,
+          container_id: container_id,
+        })
+      }
+
       window.ipcRenderer.send('client.docker.execute', {
         php,
         code,
@@ -275,7 +288,7 @@
         }"
       >
         <div class="flex gap-2">
-          <div class="px-2">PHP {{ tab.info.php_version }}</div>
+          <div class="px-2">PHP {{ tab.docker.php_version ?? tab.info.php_version }}</div>
           <DockerTabConnection :tab="tab" />
         </div>
         <div class="px-2">{{ tab.info.name }} {{ tab.info.version }}</div>

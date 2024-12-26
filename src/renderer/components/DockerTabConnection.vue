@@ -31,7 +31,7 @@
     tabsStore.updateTab(currentTab)
   }
 
-  const handleDockerTestConnectionResponse = (e: string) => {
+  const handleDockerCheckPHPVersionResponse = (e: string) => {
     if (tabsStore.current?.docker.enable) {
       connected.value = e.toString() !== ''
 
@@ -41,7 +41,7 @@
     connected.value = false
   }
 
-  const handleDockerTestConnectionError = () => {
+  const handleDockerCheckPHPVersionError = () => {
     connected.value = false
   }
 
@@ -54,13 +54,13 @@
       container_id: props.tab.docker.container_id,
     })
 
-    window.ipcRenderer.on('docker-check-php-version-response', handleDockerTestConnectionResponse)
-    window.ipcRenderer.on('docker-check-php-version-error', handleDockerTestConnectionError)
+    window.ipcRenderer.on('docker-check-php-version-response', handleDockerCheckPHPVersionResponse)
+    window.ipcRenderer.on('docker-check-php-version-error', handleDockerCheckPHPVersionError)
   })
 
   onUnmounted(() => {
-    window.ipcRenderer.removeListener('docker-container-test-response', handleDockerTestConnectionResponse)
-    window.ipcRenderer.removeListener('docker-container-test-error', handleDockerTestConnectionError)
+    window.ipcRenderer.removeListener('docker-check-php-version-response', handleDockerCheckPHPVersionResponse)
+    window.ipcRenderer.removeListener('docker-check-php-version-error', handleDockerCheckPHPVersionError)
   })
 </script>
 
