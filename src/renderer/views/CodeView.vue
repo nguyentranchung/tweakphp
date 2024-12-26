@@ -18,7 +18,7 @@
   const tabsStore = useTabsStore()
   const codeEditor = ref(null)
   const resultEditor = ref<InstanceType<typeof Editor> | null>(null)
-  const dockerClients: Ref<string[]> = ref([]);
+  const dockerClients: Ref<string[]> = ref([])
 
   const tab = ref<Tab>({
     id: 0,
