@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+  import { nextTick, onBeforeUnmount, onMounted, Ref, ref, watch } from 'vue'
   import { useExecuteStore } from '../stores/execute'
   import { useTabsStore } from '../stores/tabs'
   import { XMarkIcon, PlusIcon } from '@heroicons/vue/24/outline'
@@ -11,12 +11,14 @@
   import { useRoute } from 'vue-router'
   import router from '../router/index'
   import { Tab } from '../types/tab.type'
+  import DockerTabConnection from '../components/DockerTabConnection.vue'
 
   const settingsStore = useSettingsStore()
   const executeStore = useExecuteStore()
   const tabsStore = useTabsStore()
   const codeEditor = ref(null)
   const resultEditor = ref<InstanceType<typeof Editor> | null>(null)
+  const dockerClients: Ref<string[]> = ref([])
 
   const tab = ref<Tab>({
     id: 0,
@@ -24,11 +26,20 @@
     name: '',
     code: '',
     path: '',
+    remote_phar_client: '',
+    remote_path: '',
     result: '',
     info: {
       name: '',
       php_version: '',
       version: '',
+    },
+    docker: {
+      php: '',
+      enable: false,
+      container_id: '',
+      container_name: '',
+      php_version: '',
     },
   })
   const route = useRoute()
@@ -68,18 +79,45 @@
     tabsStore.updateTab(tab.value)
   }
 
+  window.ipcRenderer.on('docker-install-phar-client-response', (e: { phar: string; container_id: string }) => {
+    e.container_id && dockerClients.value.push(e.container_id)
+  })
+
   const executeHandler = () => {
+    const { docker, code, path, remote_path, remote_phar_client } = tab.value
+    const { php, container_id, php_version } = docker || {}
+
     executeStore.setExecuting(true)
-    window.ipcRenderer.send('client.execute', {
+
+    if (docker.enable) {
+      if (!dockerClients.value.includes(container_id)) {
+        window.ipcRenderer.send('docker-install-phar-client', {
+          phpVersion: php_version,
+          container_id: container_id,
+        })
+      }
+
+      window.ipcRenderer.send('client.docker.execute', {
+        php,
+        code,
+        path: remote_path,
+        phar_client: remote_phar_client,
+        container_id,
+      })
+
+      return
+    }
+
+    window.ipcRenderer.send('client.local.execute', {
       php: settingsStore.settings.php,
-      code: tab.value.code,
-      path: tab.value.path,
+      code,
+      path,
     })
   }
 
   const infoHandler = () => {
     if (tab.value.type === 'code' && tab.value.info.name === '') {
-      window.ipcRenderer.send('client.info', {
+      window.ipcRenderer.send('client.local.info', {
         php: settingsStore.settings.php,
         path: tab.value.path,
       })
@@ -93,11 +131,17 @@
       return
     }
     let params: any = route.params
-    let currentTab = tabsStore.findTab(params.id)
+    let currentTab = null
+    if (tabsStore.current) {
+      currentTab = tabsStore.current
+    } else {
+      currentTab = tabsStore.findTab(params.id)
+    }
     if (currentTab.id !== parseInt(params.id)) {
       await router.replace({ name: 'code', params: { id: currentTab.id } })
     } else {
       tab.value = currentTab
+      tabsStore.setCurrent(currentTab)
 
       infoHandler()
 
@@ -161,6 +205,11 @@
     let activeTab = tabsStore.addTab()
     await router.replace({ name: 'code', params: { id: activeTab.id } })
   }
+
+  const setCurrentTab = async (t: Tab) => {
+    tabsStore.setCurrent(t)
+    await router.replace({ name: 'code', params: { id: t.id } })
+  }
 </script>
 
 <template>
@@ -181,10 +230,7 @@
         v-for="t in tabsStore.tabs"
         @mousedown.middle="removeTab(t)"
       >
-        <button
-          class="h-full w-full flex items-center px-2 text-xs cursor-pointer"
-          @click="router.replace({ name: 'code', params: { id: t.id } })"
-        >
+        <button class="h-full w-full flex items-center px-2 text-xs cursor-pointer" @click="setCurrentTab(t)">
           {{ t.name }}
         </button>
         <button class="h-full w-6 flex flex-none items-center justify-center" @click="removeTab(t)">
@@ -241,7 +287,10 @@
           backgroundColor: settingsStore.colors.background,
         }"
       >
-        <div class="px-2">PHP {{ tab.info.php_version }}</div>
+        <div class="flex gap-2">
+          <div class="px-2">PHP {{ tab.docker.php_version ?? tab.info.php_version }}</div>
+          <DockerTabConnection :tab="tab" />
+        </div>
         <div class="px-2">{{ tab.info.name }} {{ tab.info.version }}</div>
       </div>
     </div>
