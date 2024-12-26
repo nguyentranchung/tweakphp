@@ -10,12 +10,20 @@ export const useTabsStore = defineStore('tabs', () => {
       type: 'home',
       name: 'home',
       path: '',
+      remote_path: '',
+      remote_phar_client: '',
       code: '<?php\n\n',
       result: '',
       info: {
         name: '',
         version: '',
         php_version: '',
+      },
+      docker: {
+        enable: false,
+        php: '',
+        container_name: '',
+        container_id: '',
       },
     },
   ]
@@ -24,6 +32,11 @@ export const useTabsStore = defineStore('tabs', () => {
     defaultTabs = JSON.parse(storedTabs)
   }
   const tabs: Ref<Tab[]> = ref(defaultTabs)
+  const current: Ref<Tab | null> = ref(null)
+
+  const setCurrent = (tab: Tab) => {
+    current.value = tab
+  }
 
   const addTab = (data: { id?: number | null; type: string; path?: string } = { type: 'home' }) => {
     if (!data.id) {
@@ -34,12 +47,20 @@ export const useTabsStore = defineStore('tabs', () => {
       type: data.type,
       name: data.type === 'home' ? 'home' : data.path?.split('/').pop(),
       path: data.path,
+      remote_phar_client: '',
+      remote_path: '',
       code: '<?php\n\n',
       result: '',
       info: {
         name: '',
         version: '',
         php_version: '',
+      },
+      docker: {
+        enable: false,
+        php: '',
+        container_id: '',
+        container_name: '',
       },
     }
     let tabExists = tabs.value.find(t => t.id === tab.id)
@@ -67,8 +88,11 @@ export const useTabsStore = defineStore('tabs', () => {
 
   const updateTab = (tab: Tab) => {
     let index = tabs.value.findIndex(t => t.id === tab.id)
-    tabs.value[index] = tab
-    localStorage.setItem('tabs', JSON.stringify(tabs.value))
+
+    if (index !== -1) {
+      tabs.value[index] = { ...tab }
+      localStorage.setItem('tabs', JSON.stringify(tabs.value))
+    }
   }
 
   const findTab = (id: number | null = null) => {
@@ -92,9 +116,11 @@ export const useTabsStore = defineStore('tabs', () => {
 
   return {
     tabs,
+    current,
     addTab,
     removeTab,
     updateTab,
     findTab,
+    setCurrent,
   }
 })
