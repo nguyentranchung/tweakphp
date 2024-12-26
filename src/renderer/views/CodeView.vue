@@ -78,20 +78,33 @@
   }
 
   const executeHandler = () => {
-    executeStore.setExecuting(true)
+    const { docker, code, path, remote_path, remote_phar_client } = tab.value;
+    const { php, container_id } = docker || {};
 
-    window.ipcRenderer.send('client.execute', {
-      php: tab.value.docker?.enable ? tab.value.docker.php : settingsStore.settings.php,
-      code: tab.value.code,
-      path: tab.value.docker?.enable ? tab.value.remote_path : tab.value.path,
-      phar_client: tab.value.docker?.enable ? tab.value.remote_phar_client : '',
-      docker_container_id: tab.value.docker?.enable ? tab.value.docker.container_id : '',
-    })
-  }
+    executeStore.setExecuting(true);
+
+    if (docker.enable) {
+      window.ipcRenderer.send('client.docker.execute', {
+        php,
+        code,
+        path: remote_path,
+        phar_client: remote_phar_client,
+        container_id,
+      });
+
+      return;
+    }
+
+    window.ipcRenderer.send('client.local.execute', {
+      php: settingsStore.settings.php,
+      code,
+      path,
+    });
+  };
 
   const infoHandler = () => {
     if (tab.value.type === 'code' && tab.value.info.name === '') {
-      window.ipcRenderer.send('client.info', {
+      window.ipcRenderer.send('client.local.info', {
         php: settingsStore.settings.php,
         path: tab.value.path,
       })
