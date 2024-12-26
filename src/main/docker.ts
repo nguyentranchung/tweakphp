@@ -37,6 +37,7 @@ export const init = async () => {
     }
 
     event.reply('docker-install-phar-client-response', {
+      container_id: args.container_id,
       phar: result,
     })
   })

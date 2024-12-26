@@ -17,5 +17,6 @@ export interface Tab {
     php: string
     container_name: string
     container_id: string
+    php_version: string
   }
 }

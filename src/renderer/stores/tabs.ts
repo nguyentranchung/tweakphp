@@ -24,6 +24,7 @@ export const useTabsStore = defineStore('tabs', () => {
         php: '',
         container_name: '',
         container_id: '',
+        php_version: '',
       },
     },
   ]
@@ -61,6 +62,7 @@ export const useTabsStore = defineStore('tabs', () => {
         php: '',
         container_id: '',
         container_name: '',
+        php_version: '',
       },
     }
     let tabExists = tabs.value.find(t => t.id === tab.id)

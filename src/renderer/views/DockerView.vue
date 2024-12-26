@@ -77,11 +77,11 @@
     let currentTab: Tab = tabsStore.findTab(tabsStore.current?.id)
 
     currentTab.remote_phar_client = e.phar
-    currentTab.info.php_version = phpVersion.value || ''
     currentTab.remote_path = form.value.working_directory
     currentTab.docker = {
       enable: true,
       php: phpPath.value || '',
+      php_version: phpVersion.value || '',
       container_id: form.value.container_id,
       container_name: form.value.container_name,
     }
@@ -145,14 +145,7 @@
 <template>
   <Container class="pt-[38px]">
     <div class="max-w-2xl mx-auto p-10">
-      <div class="flex items-center justify-between">
-        <Title>Docker Settings</Title>
-        <ArrowPathIcon
-          @click="listDockerContainer"
-          :class="{ 'animate-spin': loading }"
-          class="w-6 cursor-pointer h-6 hover:text-primary-500"
-        />
-      </div>
+      <Title>Docker Settings</Title>
     </div>
 
     <div class="max-w-2xl mx-auto p-10">
@@ -166,18 +159,30 @@
       <div class="mt-3 max-w-2xl mx-auto space-y-3">
         <div class="grid grid-cols-2 items-center">
           <div>Container</div>
-          <SelectInput
-            v-if="containers.length > 0"
-            placeholder="Select container"
-            id="docker-containers"
-            v-model="form.container_id"
-            @change="selectDockerContainer"
-          >
-            <option v-for="container in containers" :key="container.id" :value="container.id">
-              {{ container.name }}
-            </option>
-          </SelectInput>
-          <div v-else>No containers found</div>
+
+          <div class="flex gap-3 items-center">
+            <div>
+              <SelectInput
+                v-if="containers.length > 0"
+                placeholder="Select container"
+                id="docker-containers"
+                v-model="form.container_id"
+                @change="selectDockerContainer"
+              >
+                <option v-for="container in containers" :key="container.id" :value="container.id">
+                  {{ container.name }}
+                </option>
+              </SelectInput>
+              <div v-else>No containers found</div>
+            </div>
+            <div class="w-10">
+              <ArrowPathIcon
+                @click="listDockerContainer"
+                :class="{ 'animate-spin': loading }"
+                class="w-6 cursor-pointer h-6 hover:text-primary-500"
+              />
+            </div>
+          </div>
         </div>
         <Divider />
 
