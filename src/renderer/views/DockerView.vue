@@ -62,7 +62,7 @@
     window.ipcRenderer.send('docker-ps')
   }
 
-  const handleDockerTestConnectionResponse = (e: { phpVersion: string; phpPath: string }) => {
+  const handleDockerCheckPHPVersionResponse = (e: { phpVersion: string; phpPath: string }) => {
     loading.value = false
     phpVersion.value = e.phpVersion
     phpPath.value = e.phpPath
@@ -95,7 +95,7 @@
     alert(`PHP Client for version ${phpVersion.value} not found`)
   }
 
-  const handleDockerTestError = () => {
+  const handleDockerCheckPHPVersionError = () => {
     phpVersion.value = 'Not Found'
     shouldConnect.value = false
   }
@@ -119,15 +119,15 @@
 
     created.value = true
 
-    window.ipcRenderer.on('docker-check-php-version-error', handleDockerTestError)
-    window.ipcRenderer.on('docker-check-php-version-response', handleDockerTestConnectionResponse)
+    window.ipcRenderer.on('docker-check-php-version-error', handleDockerCheckPHPVersionError)
+    window.ipcRenderer.on('docker-check-php-version-response', handleDockerCheckPHPVersionResponse)
     window.ipcRenderer.on('docker-install-phar-client-error', handleDockerInstallPharClientError)
     window.ipcRenderer.on('docker-install-phar-client-response', handleDockerInstallPharClientResponse)
   })
 
   onUnmounted(() => {
-    window.ipcRenderer.removeListener('docker-check-php-version-error', handleDockerTestError)
-    window.ipcRenderer.removeListener('docker-check-php-version-response', handleDockerTestConnectionResponse)
+    window.ipcRenderer.removeListener('docker-check-php-version-error', handleDockerCheckPHPVersionError)
+    window.ipcRenderer.removeListener('docker-check-php-version-response', handleDockerCheckPHPVersionResponse)
     window.ipcRenderer.removeListener('docker-install-phar-client-error', handleDockerInstallPharClientError)
     window.ipcRenderer.removeListener('docker-install-phar-client-response', handleDockerInstallPharClientResponse)
   })
