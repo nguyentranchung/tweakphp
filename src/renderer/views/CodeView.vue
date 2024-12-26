@@ -118,7 +118,12 @@
       return
     }
     let params: any = route.params
-    let currentTab = tabsStore.findTab(params.id)
+    let currentTab = null
+    if (tabsStore.current) {
+      currentTab = tabsStore.current
+    } else {
+      currentTab = tabsStore.findTab(params.id)
+    }
     if (currentTab.id !== parseInt(params.id)) {
       await router.replace({ name: 'code', params: { id: currentTab.id } })
     } else {

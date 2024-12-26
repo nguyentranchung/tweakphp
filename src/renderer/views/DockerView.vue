@@ -88,7 +88,7 @@
 
     tabsStore.updateTab(currentTab)
 
-    router.push({ name: 'home' })
+    router.push({ name: 'code', params: { id: currentTab.id } })
   }
 
   const handleDockerInstallPharClientError = () => {

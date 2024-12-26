@@ -29,7 +29,10 @@ export const useTabsStore = defineStore('tabs', () => {
   ]
   let storedTabs = localStorage.getItem('tabs')
   if (storedTabs) {
-    defaultTabs = JSON.parse(storedTabs)
+    defaultTabs = JSON.parse(storedTabs).map((tab: any) => ({
+      ...tab,
+      docker: tab.docker || defaultTabs[0].docker,
+    }));
   }
   const tabs: Ref<Tab[]> = ref(defaultTabs)
   const current: Ref<Tab | null> = ref(null)
@@ -69,6 +72,7 @@ export const useTabsStore = defineStore('tabs', () => {
     }
     tabs.value.push(tab)
     localStorage.setItem('tabs', JSON.stringify(tabs.value))
+    setCurrent(tab)
     return tab
   }
 
@@ -77,6 +81,7 @@ export const useTabsStore = defineStore('tabs', () => {
     tabs.value.splice(index, 1)
     localStorage.setItem('tabs', JSON.stringify(tabs.value))
     if (tabs.value.length > 0) {
+      setCurrent(tabs.value[tabs.value.length - 1])
       return tabs.value[tabs.value.length - 1]
     }
     return addTab({
