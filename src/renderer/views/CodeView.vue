@@ -288,7 +288,7 @@
         }"
       >
         <div class="flex gap-2">
-          <div class="px-2">PHP {{ tab.docker.php_version ?? tab.info.php_version }}</div>
+          <div class="px-2">PHP {{ tab.docker.enable ? tab.docker.php_version : tab.info.php_version }}</div>
           <DockerTabConnection :tab="tab" />
         </div>
         <div class="px-2">{{ tab.info.name }} {{ tab.info.version }}</div>

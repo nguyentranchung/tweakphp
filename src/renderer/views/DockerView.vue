@@ -78,13 +78,11 @@
 
     currentTab.remote_phar_client = e.phar
     currentTab.remote_path = form.value.working_directory
-    currentTab.docker = {
-      enable: true,
-      php: phpPath.value || '',
-      php_version: phpVersion.value || '',
-      container_id: form.value.container_id,
-      container_name: form.value.container_name,
-    }
+    currentTab.docker.enable = true
+    currentTab.docker.php = phpPath.value ?? 'Not Found'
+    currentTab.docker.php_version = phpVersion.value ?? 'Not Found'
+    currentTab.docker.container_id = form.value.container_id
+    currentTab.docker.container_name = form.value.container_name
 
     tabsStore.updateTab(currentTab)
 
