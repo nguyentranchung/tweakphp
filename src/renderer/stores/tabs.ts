@@ -95,11 +95,8 @@ export const useTabsStore = defineStore('tabs', () => {
 
   const updateTab = (tab: Tab) => {
     let index = tabs.value.findIndex(t => t.id === tab.id)
-
-    if (index !== -1) {
-      tabs.value[index] = { ...tab }
-      localStorage.setItem('tabs', JSON.stringify(tabs.value))
-    }
+    tabs.value[index] = tab
+    localStorage.setItem('tabs', JSON.stringify(tabs.value))
   }
 
   const findTab = (id: number | null = null) => {
