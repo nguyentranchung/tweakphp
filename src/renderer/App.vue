@@ -58,8 +58,8 @@
       updateStore.setChecking(true)
     })
     window.ipcRenderer.on('init.reply', async (e: any) => {
-      isAppReady.value = true
       settingsStore.settings = e.settings
+      isAppReady.value = true
     })
     window.ipcRenderer.on('source.open.reply', (e: any) => {
       router.push({ name: 'home' })

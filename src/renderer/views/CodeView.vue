@@ -126,7 +126,7 @@
 
   onMounted(async () => {
     if (settingsStore.settings.php === '') {
-      router.push({ name: 'settings' })
+      await router.push({ name: 'settings' })
       alert('PHP path is not set!')
       return
     }
