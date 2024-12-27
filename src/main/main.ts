@@ -40,14 +40,14 @@ app.whenReady().then(async () => {
     center: true,
     icon: path.join(app.getAppPath(), 'build/icon.png'),
   })
+  window.setMenuBarVisibility(false);
+
   if (process.env.VITE_DEV_SERVER_URL) {
     await window.loadURL(process.env.VITE_DEV_SERVER_URL)
     window.webContents.openDevTools()
   } else {
     await window.loadFile(path.join(__dirname, `./index.html`))
   }
-
-  window.setMenuBarVisibility(false);
 
   ipcMain.on('init', async event => {
     await laravel.init()
