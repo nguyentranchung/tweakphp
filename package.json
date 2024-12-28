@@ -50,7 +50,11 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64", "armv7l", "arm64"]
+          "arch": [
+            "x64",
+            "armv7l",
+            "arm64"
+          ]
         }
       ],
       "desktop": {
@@ -65,7 +69,7 @@
     "deb": {
       "packageCategory": "Development",
       "depends": [
-        "zlib1g", 
+        "zlib1g",
         "zlib1g-dev"
       ]
     },
