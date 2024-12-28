@@ -1,0 +1,28 @@
+name: Test Build Linux
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22.x'
+
+      - name: Install NPM Dependencies
+        run: npm install
+
+      - name: Build Linux
+        run: npm run build-linux
+        env:
+          VITE_LSP_WEBSOCKET_PORT: 54331
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

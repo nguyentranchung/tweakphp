@@ -48,7 +48,10 @@
       "description": "Tweak your PHP code easily",
       "icon": "./build/icon.icns",
       "target": [
-        "AppImage"
+        {
+          "target": "AppImage",
+          "arch": ["x64", "armv7l", "arm64"]
+        }
       ],
       "desktop": {
         "Name": "TweakPHP",
@@ -58,6 +61,13 @@
       },
       "maintainer": "Saeed Vaziry",
       "category": "Development"
+    },
+    "deb": {
+      "packageCategory": "Development",
+      "depends": [
+        "zlib1g", 
+        "zlib1g-dev"
+      ]
     },
     "mac": {
       "darkModeSupport": true
