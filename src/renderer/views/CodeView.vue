@@ -20,6 +20,8 @@
   const resultEditor = ref<InstanceType<typeof Editor> | null>(null)
   const dockerClients: Ref<string[]> = ref([])
 
+  const platform = window.platformInfo.getPlatform()
+
   const tab = ref<Tab>({
     id: 0,
     type: '',
@@ -213,9 +215,13 @@
 </script>
 
 <template>
-  <Container v-if="tab && route.params.id" class="pt-[38px]">
+  <Container v-if="tab && route.params.id" :class="platform === 'darwin' ? 'pt-[38px]' : 'pt-0'">
     <div
-      class="min-w-full max-w-full overflow-x-auto absolute top-[38px] flex h-7 border-b"
+      class="min-w-full max-w-full absolute flex h-7 border-b"
+      :class="{
+        'top-[38px] overflow-x-auto': platform === 'darwin',
+        'top-0 overflow-x-hidden': platform !== 'darwin',
+      }"
       :style="{
         backgroundColor: settingsStore.colors.background,
         borderColor: settingsStore.colors.border,
