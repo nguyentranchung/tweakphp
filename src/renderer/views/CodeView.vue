@@ -20,6 +20,9 @@
   const resultEditor = ref<InstanceType<typeof Editor> | null>(null)
   const dockerClients: Ref<string[]> = ref([])
 
+  const platform = window.platformInfo.getPlatform()
+  const tabsContainer = ref<HTMLDivElement | null>(null)
+
   const tab = ref<Tab>({
     id: 0,
     type: '',
@@ -124,6 +127,14 @@
     }
   }
 
+  const tabsContainerWheelListener = (event: WheelEvent) => {
+    if (event.deltaY !== 0) {
+      event.preventDefault()
+      tabsContainer.value!.scrollLeft += event.deltaY as number
+      tabsStore.setScrollPosition(tabsContainer.value!.scrollLeft)
+    }
+  }
+
   onMounted(async () => {
     if (settingsStore.settings.php === '') {
       await router.push({ name: 'settings' })
@@ -131,7 +142,7 @@
       return
     }
     let params: any = route.params
-    let currentTab = null
+    let currentTab: null | Tab
     if (tabsStore.current) {
       currentTab = tabsStore.current
     } else {
@@ -157,6 +168,10 @@
       // add info listener
       events.addEventListener('client.info.reply', infoReplyListener)
     }
+    if (tabsContainer.value) {
+      tabsContainer.value.scrollLeft = tabsStore.scrollPosition
+      tabsContainer.value.addEventListener('wheel', tabsContainerWheelListener)
+    }
   })
 
   onBeforeUnmount(async () => {
@@ -171,6 +186,11 @@
 
     // remote execute listener
     events.removeEventListener('execute', executeHandler)
+
+    // remove tabsContainer wheel listener
+    if (tabsContainer.value) {
+      tabsContainer.value.removeEventListener('wheel', tabsContainerWheelListener)
+    }
   })
 
   watch(
@@ -213,9 +233,14 @@
 </script>
 
 <template>
-  <Container v-if="tab && route.params.id" class="pt-[38px]">
+  <Container v-if="tab && route.params.id" :class="platform === 'darwin' ? 'pt-[38px]' : 'pt-0'">
     <div
-      class="min-w-full max-w-full overflow-x-auto absolute top-[38px] flex h-7 border-b"
+      ref="tabsContainer"
+      class="min-w-full max-w-full absolute flex h-7 border-b pr-14 no-scrollbar overflow-x-auto whitespace-nowrap"
+      :class="{
+        'top-[38px]': platform === 'darwin',
+        'top-0 !pr-[150px]': platform !== 'darwin',
+      }"
       :style="{
         backgroundColor: settingsStore.colors.background,
         borderColor: settingsStore.colors.border,
