@@ -23,10 +23,11 @@
   })
 
   const updateTab = (history: History) => {
+    const pathSplitter = window.platformInfo.getPlatform() === 'win32' ? '\\' : '/'
     let tab: Tab = props.tab
     tab.type = 'code'
     tab.path = history.path
-    tab.name = history.path.split('/').pop()
+    tab.name = history.path.split(pathSplitter).pop()
     tabsStore.updateTab(tab)
   }
 
