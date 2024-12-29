@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron'
+import os from 'os'
 
 export interface IpcRenderer {
   send: (channel: string, data?: any) => void
@@ -29,5 +30,5 @@ const ipcRendererHandler: IpcRenderer = {
 contextBridge.exposeInMainWorld('ipcRenderer', ipcRendererHandler)
 
 contextBridge.exposeInMainWorld('platformInfo', {
-  getPlatform: () => 'linux',
+  getPlatform: () => os.platform(),
 })
