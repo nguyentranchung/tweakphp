@@ -3,6 +3,6 @@
 import { IpcRenderer, PlatformInfo } from '../preload/preload'
 
 interface Window {
-  ipcRenderer: IpcRenderer,
+  ipcRenderer: IpcRenderer
   platformInfo: PlatformInfo
 }

@@ -31,4 +31,4 @@ contextBridge.exposeInMainWorld('ipcRenderer', ipcRendererHandler)
 
 contextBridge.exposeInMainWorld('platformInfo', {
   getPlatform: () => os.platform(),
-});
+})
