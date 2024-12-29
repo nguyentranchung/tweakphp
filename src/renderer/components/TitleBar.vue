@@ -41,13 +41,13 @@
     }"
   >
     <div
-      class="px-2 absolute right-0 flex items-center justify-between"
+      class="absolute right-0 flex items-center justify-between"
       :class="{
-        'w-full left-0 h-full': platform === 'darwin',
-        'h-[27px]': platform !== 'darwin',
+        'w-full left-0 h-full px-2': platform === 'darwin',
+        'h-[27px] pr-2': platform !== 'darwin',
       }"
       :style="{
-        backgroundColor: settingsStore.colors.backgroundColor,
+        backgroundColor: settingsStore.colors.background,
       }"
     >
       <div class="flex-grow-0 w-[120px]" v-if="platform === 'darwin'"></div>

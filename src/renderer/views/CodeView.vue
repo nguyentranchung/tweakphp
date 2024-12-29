@@ -239,7 +239,7 @@
       class="min-w-full max-w-full absolute flex h-7 border-b pr-14 no-scrollbar overflow-x-auto whitespace-nowrap"
       :class="{
         'top-[38px]': platform === 'darwin',
-        'top-0': platform !== 'darwin',
+        'top-0 !pr-[150px]': platform !== 'darwin',
       }"
       :style="{
         backgroundColor: settingsStore.colors.background,
