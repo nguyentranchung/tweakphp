@@ -41,11 +41,15 @@ https://youtu.be/3KnzaQJK7NU?si=lHIb3GmZYyXiQ2cB
 
 ## Screenshots
 
-![CleanShot 2024-12-24 at 23 47 14@2x](https://github.com/user-attachments/assets/5bfc207f-b016-4373-b9fb-547385c46089)
+![CleanShot 2024-12-31 at 12 21 16@2x](https://github.com/user-attachments/assets/4885afcd-458a-4e40-8f96-20b1ea58c38f)
 
-![CleanShot 2024-12-24 at 23 47 57@2x](https://github.com/user-attachments/assets/6294a1e6-5d43-4181-b509-61a598dc2405)
+![CleanShot 2024-12-31 at 12 22 37@2x](https://github.com/user-attachments/assets/28c6b5b0-09ad-4413-bb16-5864dead5c77)
 
-![CleanShot 2024-12-24 at 23 48 16@2x](https://github.com/user-attachments/assets/cb119abe-b576-4da2-a6c6-9445578828af)
+![CleanShot 2024-12-31 at 12 23 06@2x](https://github.com/user-attachments/assets/b9fb5aad-3e28-49bd-9dc0-e651acd925fb)
+
+![CleanShot 2024-12-31 at 12 23 47@2x](https://github.com/user-attachments/assets/d9b18ce4-9a48-417c-96dc-9a8f15b66901)
+
+![CleanShot 2024-12-31 at 12 24 20@2x](https://github.com/user-attachments/assets/219aa782-81c2-4c0a-8d2d-6cabfa354c6a)
 
 ## Installation
 
