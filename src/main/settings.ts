@@ -65,3 +65,11 @@ export const getSettings = () => {
   // merge default settings with stored settings and take stored settings as priority
   return settings
 }
+
+export const updateSettings = (updates: Partial<Settings>) => {
+  const currentSettings = getSettings();
+  const updatedSettings = { ...currentSettings, ...updates };
+
+  storeSettings(null, updatedSettings);
+  return updatedSettings;
+};

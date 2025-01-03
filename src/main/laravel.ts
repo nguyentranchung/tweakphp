@@ -1,12 +1,15 @@
 import fs from 'fs'
-import { Settings } from '../types/settings.type'
-import { getSettings } from './settings'
+import {getSettings, updateSettings} from './settings'
 import { app, BrowserWindow } from 'electron'
 import path from 'path'
 import AdmZip from 'adm-zip'
+import {Settings} from "../types/settings.type.ts";
 
 export const init = async (window: BrowserWindow) => {
   const settings: Settings = getSettings()
+
+  settings.laravelPath = path.join(app.getPath('userData'), 'laravel');
+  updateSettings(settings)
 
   if (fs.existsSync(settings.laravelPath)) {
     return
