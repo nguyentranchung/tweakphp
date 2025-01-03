@@ -8,10 +8,12 @@ import {Settings} from "../types/settings.type.ts";
 export const init = async (window: BrowserWindow) => {
   const settings: Settings = getSettings()
 
-  settings.laravelPath = path.join(app.getPath('userData'), 'laravel');
+  const laravelPath = path.join(app.getPath('userData'), 'laravel')
+  settings.laravelPath = laravelPath;
+
   updateSettings(settings)
 
-  if (fs.existsSync(settings.laravelPath)) {
+  if (fs.existsSync(laravelPath)) {
     return
   }
 
@@ -28,7 +30,7 @@ export const init = async (window: BrowserWindow) => {
   const zipEntries = zip.getEntries()
   const totalFiles = zipEntries.length
 
-  const outputDir = path.resolve(settings.laravelPath, '..')
+  const outputDir = path.resolve(laravelPath, '..')
 
   let lastProgressEvent = 0
   for (let i = 0; i < totalFiles; i++) {
