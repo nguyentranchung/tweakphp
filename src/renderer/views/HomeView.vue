@@ -8,6 +8,7 @@
   import { useSettingsStore } from '../stores/settings'
   import { Tab } from '../types/tab.type'
   import { History } from '../types/history.type'
+  import ProgressBar from '../components/ProgressBar.vue'
 
   const tabsStore = useTabsStore()
   const historyStore = useHistoryStore()
@@ -51,6 +52,18 @@
           <button>
             <TrashIcon @click="historyStore.removeHistory(history)" class="w-4 h-4 hover:text-red-600" />
           </button>
+        </div>
+      </div>
+
+      <div
+        class="pl-12 fixed bottom-0 left-0 right-0 border-t z-10 h-6 flex items-center justify-end text-xs"
+        :style="{
+          borderColor: settingsStore.colors.border,
+          backgroundColor: settingsStore.colors.background,
+        }"
+      >
+        <div class="px-2 flex justify-end">
+          <ProgressBar :home-page="true" />
         </div>
       </div>
     </div>

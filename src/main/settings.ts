@@ -5,12 +5,11 @@ import { app, ipcMain } from 'electron'
 import { Settings } from '../types/settings.type'
 import * as php from './php'
 import os from 'os'
+import { getLaravelPath } from './laravel.ts'
 
 const homeDir = os.homedir()
 
-const laravelPath = app.isPackaged
-  ? path.join(process.resourcesPath, 'public/laravel')
-  : path.join(__dirname, 'laravel')
+const laravelPath = getLaravelPath()
 
 const settingsDir = path.join(homeDir, '.tweakphp')
 if (app.isPackaged && !fs.existsSync(settingsDir)) {
@@ -67,9 +66,9 @@ export const getSettings = () => {
 }
 
 export const updateSettings = (updates: Partial<Settings>) => {
-  const currentSettings = getSettings();
-  const updatedSettings = { ...currentSettings, ...updates };
+  const currentSettings = getSettings()
+  const updatedSettings = { ...currentSettings, ...updates }
 
-  storeSettings(null, updatedSettings);
-  return updatedSettings;
-};
+  storeSettings(null, updatedSettings)
+  return updatedSettings
+}

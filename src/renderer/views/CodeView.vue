@@ -321,7 +321,7 @@
           <DockerTabConnection :tab="tab" class="whitespace-nowrap" />
         </div>
         <div class="pr-2 flex items-center justify-end gap-3 w-1/2">
-          <ProgressBar />
+          <ProgressBar :home-page="false" />
           <span class="whitespace-nowrap items-end">{{ tab.info.name }} {{ tab.info.version }}</span>
         </div>
       </div>

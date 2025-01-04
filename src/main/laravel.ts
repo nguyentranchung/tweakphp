@@ -1,15 +1,19 @@
 import fs from 'fs'
-import {getSettings, updateSettings} from './settings'
+import { getSettings, updateSettings } from './settings'
 import { app, BrowserWindow } from 'electron'
 import path from 'path'
 import AdmZip from 'adm-zip'
-import {Settings} from "../types/settings.type.ts";
+import { Settings } from '../types/settings.type.ts'
+import log from 'electron-log/main'
 
 export const init = async (window: BrowserWindow) => {
   const settings: Settings = getSettings()
 
-  const laravelPath = path.join(app.getPath('userData'), 'laravel')
-  settings.laravelPath = laravelPath;
+  const laravelPath = getLaravelPath()
+
+  log.info(`Laravel path: ${laravelPath}`)
+
+  settings.laravelPath = laravelPath
 
   updateSettings(settings)
 
@@ -22,7 +26,7 @@ export const init = async (window: BrowserWindow) => {
     : path.join(__dirname, '../public/laravel.zip')
 
   if (!fs.existsSync(zipPath)) {
-    console.error(`ZIP file not found: ${zipPath}`)
+    log.error(`ZIP file not found: ${zipPath}`)
     return
   }
 
@@ -58,7 +62,11 @@ export const init = async (window: BrowserWindow) => {
     }
   }
 
-  console.log(`Extracted ${zipPath} to ${settings.laravelPath}`)
+  log.info(`Extracted ${zipPath} to ${settings.laravelPath}`)
 
   window.setProgressBar(-1)
+}
+
+export const getLaravelPath = (): string => {
+  return app.isPackaged ? path.join(app.getPath('userData'), 'laravel') : path.join(__dirname, 'laravel')
 }
