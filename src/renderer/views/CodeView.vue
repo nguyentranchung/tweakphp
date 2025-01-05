@@ -286,7 +286,7 @@
           </div>
         </div>
         <div class="pr-2 flex items-center justify-end gap-3 w-1/2">
-          <ProgressBar :home-page="false" />
+          <ProgressBar />
           <span class="whitespace-nowrap items-end">{{ tab.info.name }} {{ tab.info.version }}</span>
         </div>
       </div>

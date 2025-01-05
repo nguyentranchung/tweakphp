@@ -4,10 +4,6 @@
   const title = ref<string>('')
   const progress = ref<number>(0)
 
-  defineProps({
-    homePage: [Boolean],
-  })
-
   window.ipcRenderer.on('statusbar.progress', e => {
     title.value = e.title
     progress.value = e.progress
