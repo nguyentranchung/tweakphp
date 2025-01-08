@@ -56,8 +56,14 @@
             "arm64"
           ]
         },
-        "deb",
-        "snap"
+        {
+          "target": "snap",
+          "arch": [
+            "amd64",
+            "arm64"
+          ]
+        },
+        "deb"
       ],
       "desktop": {
         "Name": "TweakPHP",
