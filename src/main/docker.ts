@@ -22,7 +22,7 @@ export const init = async () => {
 
   ipcMain.on('docker.php-version.info', (event, args) => {
     try {
-      const result = checkPHPVersion(args.container_id)
+      const result = checkPHPVersion(args.container_name)
       event.reply('docker.php-version.reply', result)
     } catch (error: unknown) {
       event.reply('docker.php-version.reply.error', { error })
@@ -34,10 +34,10 @@ export const init = async () => {
       const versionMatch = args.php_version.match(/^(\d+\.\d+)/)
       const phpVersion = versionMatch ? versionMatch[1] : null
 
-      const result = copyPharClient(phpVersion, args.container_id)
+      const result = copyPharClient(phpVersion, args.container_name)
 
       event.reply('docker.copy-phar.reply', {
-        container_id: args.container_id,
+        container_name: args.container_name,
         phar_path: result,
       })
     } catch (error: unknown) {
@@ -65,22 +65,22 @@ export const getDockerContainers = (): DockerContainerResponse[] | null => {
   }
 }
 
-export const getPhpPath = (containerId: string): string | null => {
+export const getPhpPath = (containerName: string): string | null => {
   try {
-    return execSync(`${DOCKER_PATH} exec ${containerId} which php`).toString().trim()
+    return execSync(`${DOCKER_PATH} exec ${containerName} which php`).toString().trim()
   } catch (error: unknown) {
     throw new Error(parseDockerErrorMessage(error))
   }
 }
 
-export const copyPharClient = (phpVersion: string | null, containerId: string): string => {
+export const copyPharClient = (phpVersion: string | null, containerName: string): string => {
   let getClient: string = app.isPackaged
     ? path.join(process.resourcesPath, `public/client-${phpVersion}.phar`)
     : path.join(__dirname, `../public/client-${phpVersion}.phar`)
 
   try {
     const pharPath = `/tmp/client-${phpVersion}.phar`
-    execSync(`${DOCKER_PATH} cp ${getClient} ${containerId}:'${pharPath}'`).toString().trim()
+    execSync(`${DOCKER_PATH} cp ${getClient} ${containerName}:'${pharPath}'`).toString().trim()
 
     return pharPath
   } catch (error) {
@@ -88,15 +88,15 @@ export const copyPharClient = (phpVersion: string | null, containerId: string): 
   }
 }
 
-export const checkPHPVersion = (containerId: string): PHPInfoResponse => {
+export const checkPHPVersion = (containerName: string): PHPInfoResponse => {
   try {
-    const result = execSync(`${DOCKER_PATH} exec ${containerId} php --version`).toString().trim()
+    const result = execSync(`${DOCKER_PATH} exec ${containerName} php --version`).toString().trim()
 
     const versionMatch = result.match(/PHP\s(\d+\.\d+\.\d+)/)
     const phpVersion = versionMatch ? versionMatch[1] : null
 
     return {
-      php_path: getPhpPath(containerId) || '',
+      php_path: getPhpPath(containerName) || '',
       php_version: phpVersion || '',
     }
   } catch (error) {

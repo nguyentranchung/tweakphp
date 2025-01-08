@@ -29,7 +29,7 @@ export function getLocalPharClient() {
 
 export const dockerExec = async (
   event: Electron.IpcMainEvent,
-  data: { code: string; php: string; path: string; phar_client: string; container_id: string }
+  data: { code: string; php: string; path: string; phar_client: string; container_name: string }
 ) => {
   const phpPath = `"${data.php}"`
   const path = `"${data.path}"`
@@ -37,7 +37,7 @@ export const dockerExec = async (
 
   const pharClient = `"${data.phar_client}"`
 
-  const command = `${DOCKER_PATH} exec ${data.container_id} ${phpPath} ${pharClient} ${path} execute ${code}`
+  const command = `${DOCKER_PATH} exec ${data.container_name} ${phpPath} ${pharClient} ${path} execute ${code}`
 
   await execute(event, command)
 }
