@@ -63,7 +63,10 @@
             "arm64"
           ]
         },
-        "deb"
+        {
+          "target": "deb",
+          "arch": ["amd64", "arm64"]
+        }
       ],
       "desktop": {
         "Name": "TweakPHP",
