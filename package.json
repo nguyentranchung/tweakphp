@@ -65,7 +65,10 @@
         },
         {
           "target": "deb",
-          "arch": ["amd64", "arm64"]
+          "arch": [
+            "amd64",
+            "arm64"
+          ]
         }
       ],
       "desktop": {
