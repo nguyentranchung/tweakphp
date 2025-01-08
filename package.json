@@ -59,14 +59,14 @@
         {
           "target": "snap",
           "arch": [
-            "amd64",
+            "x64",
             "arm64"
           ]
         },
         {
           "target": "deb",
           "arch": [
-            "amd64",
+            "x64",
             "arm64"
           ]
         }
