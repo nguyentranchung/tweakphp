@@ -30,9 +30,7 @@ jobs:
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
         run: |
-          set +x
           echo "$APPLE_CERTIFICATE" | base64 --decode > apple.p12
-          set -x
           security create-keychain -p temporary build.keychain
           security set-keychain-settings build.keychain
           security unlock-keychain -p temporary build.keychain
