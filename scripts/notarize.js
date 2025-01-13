@@ -6,8 +6,8 @@ export default async function notarizing(context) {
     return
   }
 
-  if (process.env.GITHUB_EVENT_NAME === 'pull_request') {
-    console.log('Skipping notarization because this is a pull request build.')
+  if (process.env.SKIP_NOTARIZE) {
+    console.log('Skipping notarization because SKIP_NOTARIZE is set')
     return
   }
 
