@@ -105,12 +105,15 @@ class SSHClient {
   }
 }
 
+let sshClient: SSHClient | null = null
+
 export const init = async () => {
   ipcMain.on('ssh.connect', connect)
+  ipcMain.on('ssh.disconnect', disconnect)
 }
 
 export const connect = async (event: any, config: ConnectionConfig, data: any = {}) => {
-  const sshClient = new SSHClient(config)
+  sshClient = new SSHClient(config)
   try {
     await sshClient.connect()
 
@@ -163,7 +166,7 @@ export const connect = async (event: any, config: ConnectionConfig, data: any = 
 }
 
 export const exec = async (config: ConnectionConfig, command: string): Promise<string> => {
-  const sshClient = new SSHClient(config)
+  sshClient = new SSHClient(config)
   try {
     await sshClient.connect()
     const result = await sshClient.exec(command)
@@ -173,6 +176,10 @@ export const exec = async (config: ConnectionConfig, command: string): Promise<s
     sshClient.disconnect()
     throw error
   }
+}
+
+export const disconnect = async () => {
+  sshClient && sshClient.disconnect()
 }
 
 export const uploadFile = async (config: ConnectionConfig, from: string, to: string): Promise<void> => {
