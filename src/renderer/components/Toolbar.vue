@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { ArrowPathIcon, ChevronDownIcon, FolderIcon, ServerIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+  import { ArrowPathIcon, ChevronDownIcon, FolderIcon, ServerIcon } from '@heroicons/vue/24/outline'
   import SecondaryButton from './SecondaryButton.vue'
   import DockerIcon from './icons/DockerIcon.vue'
   import KubectlIcon from './icons/KubectlIcon.vue'
@@ -10,7 +10,7 @@
   import { computed, ComputedRef, onBeforeUnmount, onMounted, ref } from 'vue'
   import DockerView from '../views/DockerView.vue'
   import { useSettingsStore } from '../stores/settings'
-  import { Tab } from '../types/tab.type'
+  import { Tab } from '../../types/tab.type'
   import { useSSHStore } from '../stores/ssh'
   import SSHView from '../views/SSHView.vue'
   import { ConnectionConfig as SSHConnectionConfig } from '../../types/ssh.type'
@@ -18,6 +18,7 @@
   import events from '../events'
   import { useKubectlStore } from '../stores/kubectl'
   import KubectlView from '../views/KubectlView.vue'
+  import { ConnectReply } from '../../types/client.type'
 
   const tabStore = useTabsStore()
   const settingsStore = useSettingsStore()
@@ -29,39 +30,47 @@
   const tab: ComputedRef<Tab | null> = computed(() => tabStore.getCurrent())
   const sshConnecting = ref(false)
   const kubectlConnecting = ref(false)
+  const connecting = ref('')
 
   onMounted(() => {
-    events.addEventListener('ssh.connect.reply', sshConnectReply)
-    events.addEventListener('kubectl.connect.reply', kubectlConnectReply)
+    events.addEventListener('client.connect.reply', connectReply)
   })
 
   onBeforeUnmount(() => {
-    events.removeEventListener('ssh.connect.reply', sshConnectReply)
-    events.removeEventListener('kubectl.connect.reply', kubectlConnectReply)
+    events.removeEventListener('client.connect.reply', connectReply)
   })
 
-  const changeExecution = (execution: string) => {
+  const connect = (execution: string) => {
     if (!tabStore.current) {
       return
     }
-
-    tabStore.current.execution = execution
-
-    tabStore.updateTab(tabStore.current)
+    connecting.value = execution
+    let connection = tabStore.getConnectionConfig(tabStore.current, execution)
+    window.ipcRenderer.send('client.connect', {
+      connection: { ...connection },
+      data: {
+        state: 'reconnect',
+        setup: true,
+      },
+    })
   }
 
-  const sshConnect = (config: SSHConnectionConfig | undefined) => {
-    sshConnecting.value = true
-    window.ipcRenderer.send('ssh.connect', { ...config }, { state: 'reconnect' })
-  }
-
-  const sshConnectReply = (e: any) => {
-    if (e.detail.data.state === 'reconnect') {
-      sshConnecting.value = false
-      if (e.detail.connected) {
-        sshConnected(e.detail.config)
-      }
+  const connectReply = (e: any) => {
+    const reply = e.detail as ConnectReply
+    if (reply.data?.state !== 'reconnect') {
+      return
     }
+    let execution = connecting.value
+    connecting.value = ''
+    if (reply.error) {
+      alert(reply.error)
+      return
+    }
+    if (!tabStore.current) {
+      return
+    }
+    tabStore.current.execution = execution
+    tabStore.updateTab(tabStore.current)
   }
 
   const sshConnected = (config: SSHConnectionConfig) => {
@@ -88,23 +97,7 @@
     }
   }
 
-  const kubectlConnect = (config: KubectlConnectionConfig | undefined) => {
-    kubectlConnecting.value = true
-    window.ipcRenderer.send('kubectl.connect', { ...config }, { state: 'reconnect' })
-  }
-
-  const kubectlConnectReply = (e: any) => {
-    if (e.detail.data.state === 'reconnect') {
-      kubectlConnecting.value = false
-      if (e.detail.connected) {
-        kubectlConnected(e.detail.config)
-      }
-    }
-  }
-
   const kubectlConnected = (config: KubectlConnectionConfig) => {
-    kubectlModal.value.closeModal()
-
     if (!tabStore.current) {
       return
     }
@@ -113,7 +106,7 @@
     tabStore.current.kubectl = { id: config.id }
 
     tabStore.updateTab(tabStore.current)
-    sshModal.value.closeModal()
+    kubectlModal.value.closeModal()
   }
 
   const kubectlRemoved = (id: number) => {
@@ -134,10 +127,15 @@
     <!-- local -->
     <SecondaryButton
       class="!px-2"
-      @click="changeExecution('local')"
+      @click="connect('local')"
       v-tippy="{ content: 'Connect to local', placement: 'bottom' }"
     >
-      <FolderIcon class="size-4 mr-1" :class="{ '!text-green-500': tabStore.getCurrent()?.execution === 'local' }" />
+      <ArrowPathIcon v-if="connecting === 'local'" class="size-4 mr-1 animate-spin" />
+      <FolderIcon
+        v-else
+        class="size-4 mr-1"
+        :class="{ '!text-green-500': tabStore.getCurrent()?.execution === 'local' }"
+      />
       <span class="text-xs">Local</span>
     </SecondaryButton>
 
@@ -146,15 +144,17 @@
       <DropDown>
         <template v-slot:trigger>
           <SecondaryButton class="!px-2">
+            <ArrowPathIcon v-if="connecting === 'docker'" class="size-4 mr-1 animate-spin" />
             <DockerIcon
+              v-else
               class="size-4 mr-1"
               :class="{ '!text-green-500': tabStore.getCurrent()?.execution === 'docker' }"
             />
             <span class="text-xs max-w-[150px] truncate">
               <template
-                v-if="tabStore.getCurrent().execution === 'docker' && tabStore.getCurrent()?.docker.container_name"
+                v-if="tabStore.getCurrent().execution === 'docker' && tabStore.getCurrent()?.docker?.container_name"
               >
-                {{ tabStore.getCurrent()?.docker.container_name }}
+                {{ tabStore.getCurrent()?.docker?.container_name }}
               </template>
               <template v-else> Docker </template>
             </span>
@@ -163,11 +163,11 @@
         </template>
         <div>
           <DropDownItem
-            v-if="tabStore.getCurrent()?.docker.container_name"
-            @click="changeExecution('docker')"
+            v-if="tabStore.getCurrent()?.docker?.container_name"
+            @click="connect('docker')"
             class="truncate"
           >
-            {{ tabStore.getCurrent()?.docker.container_name }}
+            {{ tabStore.getCurrent()?.docker?.container_name }}
           </DropDownItem>
           <DropDownItem @click="dockerModal.openModal()"> Connect </DropDownItem>
         </div>
@@ -177,10 +177,7 @@
       <DropDown>
         <template v-slot:trigger>
           <SecondaryButton class="!px-2">
-            <ArrowPathIcon
-              v-if="tab && tab.ssh && sshConnecting && sshStore.getConnection(tab.ssh.id)"
-              class="size-4 mr-1 animate-spin"
-            />
+            <ArrowPathIcon v-if="connecting === 'ssh'" class="size-4 mr-1 animate-spin" />
             <ServerIcon
               v-else
               class="size-4 mr-1"
@@ -206,7 +203,7 @@
         <div>
           <DropDownItem
             v-if="tab && tab.ssh && sshStore.getConnection(tab.ssh.id) && tab.execution !== 'ssh'"
-            @click="sshConnect(sshStore.getConnection(tab.ssh.id))"
+            @click="connect('ssh')"
             class="truncate"
           >
             {{ sshStore.getConnection(tab.ssh.id)?.name }}
@@ -219,10 +216,7 @@
       <DropDown>
         <template v-slot:trigger>
           <SecondaryButton class="!px-2">
-            <ArrowPathIcon
-              v-if="tab && tab.kubectl && kubectlConnecting && kubectlStore.getConnection(tab.kubectl.id)"
-              class="size-4 mr-1 animate-spin"
-            />
+            <ArrowPathIcon v-if="connecting === 'kubectl'" class="size-4 mr-1 animate-spin" />
             <KubectlIcon
               v-else
               class="size-4 mr-1"
@@ -252,7 +246,7 @@
         <div>
           <DropDownItem
             v-if="tab && tab.kubectl && kubectlStore.getConnection(tab.kubectl.id) && tab.execution !== 'kubectl'"
-            @click="kubectlConnect(kubectlStore.getConnection(tab.kubectl.id))"
+            @click="connect('kubectl')"
             class="truncate"
           >
             {{ kubectlStore.getConnection(tab.kubectl.id)?.name }}
@@ -263,17 +257,10 @@
     </template>
 
     <!-- other tools -->
-    <SecondaryButton
-      class="!px-2"
-      v-tippy="{ content: 'Close', placement: 'right' }"
-      @click="tabStore.removeTab(tab.id)"
-    >
-      <XMarkIcon class="size-4" />
-    </SecondaryButton>
 
     <!-- modals -->
     <Modal title="Connect to Docker" ref="dockerModal" size="xl">
-      <DockerView @connected="dockerModal.closeModal()" />
+      <DockerView @connected="alert(1)" />
     </Modal>
     <Modal title="Connect to SSH" ref="sshModal" size="2xl">
       <SSHView @connected="sshConnected($event)" @removed="sshRemoved($event)" />

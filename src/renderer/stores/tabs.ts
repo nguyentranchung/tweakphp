@@ -1,63 +1,32 @@
 import { Ref, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { Tab } from '../types/tab.type'
+import { Tab } from '../../types/tab.type'
 import router from '../router'
+import { ConnectionConfig as LocalConnectionConfig } from '../../types/local.type'
+import { ConnectionConfig as SSHConnectionConfig } from '../../types/ssh.type'
+import { ConnectionConfig as DockerConnectionConfig } from '../../types/docker.type'
+import { ConnectionConfig as KubectlConnectionConfig } from '../../types/kubectl.type'
+import { useSettingsStore } from './settings'
+import { useSSHStore } from './ssh'
+import { useKubectlStore } from './kubectl'
 
 export const useTabsStore = defineStore('tabs', () => {
   // setup tabs
-  let defaultTabs = [
-    {
-      id: Date.now(),
-      type: 'home',
-      name: 'home',
-      path: '',
-      execution: 'local',
-      remote_path: '',
-      remote_phar_client: '',
-      code: '<?php\n\n',
-      result: '',
-      pane: {
-        code: 50,
-        result: 50,
-      },
-      info: {
-        name: '',
-        version: '',
-        php_version: '',
-      },
-      docker: {
-        enable: false,
-        php: '',
-        container_name: '',
-        container_id: '',
-        php_version: '',
-      },
-      docker_ssh: {
-        ssh_id: 0,
-        php: '',
-        docker_path: '',
-        container_name: '',
-        container_id: '',
-        php_version: '',
-        phar_client: '',
-        working_directory: '',
-      },
-    },
-  ]
+  let defaultTabs = []
   let storedTabs = localStorage.getItem('tabs')
   if (storedTabs) {
     defaultTabs = JSON.parse(storedTabs)
-      .filter((tab: Tab) => tab.type !== 'home')
-      .map((tab: Tab) => ({
-        ...tab,
-        pane: tab.pane || defaultTabs[0].pane,
-        execution: tab.execution as 'local' | 'ssh' | 'docker',
-        docker: tab.docker || defaultTabs[0].docker,
-      }))
+      .filter((tab: any) => tab.type !== 'home')
+      .map((tab: any) => {
+        return normalize(tab)
+      })
   }
   const tabs: Ref<Tab[]> = ref(defaultTabs)
   const current: Ref<Tab | null> = ref(null)
   const scrollPosition = ref(0)
+  const settingsStore = useSettingsStore()
+  const sshStore = useSSHStore()
+  const kubectlStore = useKubectlStore()
 
   const setCurrent = (tab: Tab | null): void => {
     current.value = tab
@@ -76,7 +45,7 @@ export const useTabsStore = defineStore('tabs', () => {
     return findTab(id ? parseInt(id) : null)
   }
 
-  const addTab = (data: { id?: number | null; type: string; path?: string } = { type: 'home' }) => {
+  const addTab = (data: { id?: number | null; type: string; path: string }) => {
     if (!data.id) {
       data.id = Date.now()
     }
@@ -86,11 +55,9 @@ export const useTabsStore = defineStore('tabs', () => {
     let tab: Tab = {
       id: data.id,
       type: data.type,
-      name: data.type === 'home' ? 'home' : (data.path?.split(pathSplitter).pop() as string),
+      name: data.path.split(pathSplitter).pop() as string,
       path: data.path,
       execution: 'local',
-      remote_phar_client: '',
-      remote_path: '',
       code: '<?php\n\n',
       result: '',
       pane: {
@@ -101,23 +68,6 @@ export const useTabsStore = defineStore('tabs', () => {
         name: '',
         version: '',
         php_version: '',
-      },
-      docker: {
-        enable: false,
-        php: '',
-        container_id: '',
-        container_name: '',
-        php_version: '',
-      },
-      docker_ssh: {
-        ssh_id: '',
-        php: '',
-        docker_path: '',
-        container_name: '',
-        container_id: '',
-        php_version: '',
-        phar_client: '',
-        working_directory: '',
       },
     }
     let tabExists = tabs.value.find(t => t.id === tab.id)
@@ -170,6 +120,44 @@ export const useTabsStore = defineStore('tabs', () => {
     scrollPosition.value = position
   }
 
+  const getConnectionConfig = (tab: Tab, execution?: string) => {
+    let connection:
+      | LocalConnectionConfig
+      | SSHConnectionConfig
+      | DockerConnectionConfig
+      | KubectlConnectionConfig
+      | undefined
+
+    if (!execution) {
+      execution = tab.execution
+    }
+
+    if (execution === 'local') {
+      connection = {
+        type: 'local',
+        path: tab.path ?? '',
+        php: settingsStore.settings.php,
+      }
+    }
+
+    if (execution === 'docker' && tab.docker) {
+      connection = tab.docker
+      if (tab.docker.ssh_id) {
+        connection.ssh = sshStore.getConnection(tab.docker.ssh_id)
+      }
+    }
+
+    if (execution === 'ssh' && tab.ssh) {
+      connection = sshStore.getConnection(tab.ssh.id)
+    }
+
+    if (execution === 'kubectl' && tab.kubectl) {
+      connection = kubectlStore.getConnection(tab.kubectl.id)
+    }
+
+    return connection
+  }
+
   return {
     tabs,
     current,
@@ -181,5 +169,53 @@ export const useTabsStore = defineStore('tabs', () => {
     getCurrent,
     scrollPosition,
     setScrollPosition,
+    getConnectionConfig,
   }
 })
+
+const normalize = (tab: any): Tab => {
+  let t: Tab = {
+    id: (tab.id as number) ?? Date.now(),
+    name: tab.name as string,
+    type: tab.type as string,
+    code: (tab.code as string) ?? '',
+    path: tab.path as string | undefined,
+    execution: (tab.execution as 'local' | 'ssh' | 'docker' | 'kubectl') ?? 'local',
+    result: (tab.result as string) ?? '',
+    pane: {
+      code: (tab.pane?.code as number) ?? 50,
+      result: (tab.pane?.result as number) ?? 50,
+    },
+    info: {
+      name: (tab.info?.name as string) ?? '',
+      php_version: (tab.info?.php_version as string) ?? '',
+      version: (tab.info?.version as string) ?? '',
+    },
+  }
+  if (tab.docker && tab.docker.container_name) {
+    t.docker = {
+      type: 'docker',
+      working_directory: tab.docker.working_directory,
+      container_id: tab.docker.container_id,
+      container_name: tab.docker.container_name,
+      php_version: tab.docker.php_version ?? '',
+      php_path: tab.docker.php_path ?? '',
+      client_path: tab.docker.client_path ?? tab.docker.phar_path,
+      ssh_id: tab.docker.ssh_id ?? 0,
+    }
+  }
+
+  if (tab.ssh && tab.ssh.id) {
+    t.ssh = {
+      id: tab.ssh.id,
+    }
+  }
+
+  if (tab.kubectl && tab.kubectl.id) {
+    t.kubectl = {
+      id: tab.kubectl.id,
+    }
+  }
+
+  return t
+}

@@ -1,4 +1,5 @@
 export interface ConnectionConfig {
+  type: 'ssh'
   id: number
   name: string
   color: string
@@ -10,10 +11,5 @@ export interface ConnectionConfig {
   privateKey: string | undefined
   path: string
   php: string | undefined
-  phar_client: string | undefined
-}
-
-export interface ConnectionReply {
-  connected: boolean
-  config: ConnectionConfig
+  client_path: string | undefined
 }
