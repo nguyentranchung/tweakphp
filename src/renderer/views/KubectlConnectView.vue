@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import Divider from '../components/Divider.vue'
   import TextInput from '../components/TextInput.vue'
-  import { onBeforeUnmount, onMounted, Ref, ref, defineEmits, defineProps } from 'vue'
+  import { onBeforeUnmount, onMounted, Ref, ref } from 'vue'
   import PrimaryButton from '../components/PrimaryButton.vue'
   import SelectInput from '../components/SelectInput.vue'
   import { ConnectionConfig } from '../../types/kubectl.type'

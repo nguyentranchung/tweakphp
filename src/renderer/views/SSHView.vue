@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import PrimaryButton from '../components/PrimaryButton.vue'
   import { EyeIcon, PlusIcon, TrashIcon, WifiIcon, ArrowPathIcon, PencilIcon } from '@heroicons/vue/24/outline'
-  import { onBeforeUnmount, onMounted, ref, defineEmits } from 'vue'
+  import { onBeforeUnmount, onMounted, ref } from 'vue'
   import { useSSHStore } from '../stores/ssh'
   import Divider from '../components/Divider.vue'
   import Modal from '../components/Modal.vue'

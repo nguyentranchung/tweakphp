@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { onMounted, ref, Ref, watch, defineEmits } from 'vue'
+  import { onMounted, ref, Ref, watch } from 'vue'
   import { useHistoryStore } from '../stores/history'
   import { TrashIcon } from '@heroicons/vue/24/outline'
   import { useTabsStore } from '../stores/tabs'
