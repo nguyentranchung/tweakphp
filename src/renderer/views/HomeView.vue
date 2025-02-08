@@ -4,6 +4,7 @@
   import { useSettingsStore } from '../stores/settings'
   import { useTabsStore } from '../stores/tabs'
   import router from '../router'
+  import appIcon from '../../../build/icon.png'
 
   const settingsStore = useSettingsStore()
   const tabsStore = useTabsStore()
@@ -20,7 +21,7 @@
   <Container class="flex items-center justify-center">
     <div class="w-full max-w-sm px-5 space-y-3">
       <div class="flex items-center">
-        <img src="../../../build/icon.png" alt="" class="size-7 mr-2" />
+        <img :src="appIcon" alt="TweakPHP" class="size-7 mr-2" />
         <h2 class="text-xl">
           TweakPHP <span class="opacity-50">{{ settingsStore.settings.version }}</span>
         </h2>
