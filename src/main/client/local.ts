@@ -14,7 +14,7 @@ export class LocalClient extends BaseClient {
     return new Promise(resolve => {
       const phpPath = `"${this.connection.php}"`
       const path = `"${this.connection.path}"`
-      const command = `${phpPath} ${getLocalPharClient()} ${path} execute ${btoa(code)}`
+      const command = `${phpPath} "${getLocalPharClient()}" ${path} execute ${btoa(code)}`
       exec(command, (_err, stdout) => {
         resolve(stdout)
       })
@@ -23,7 +23,7 @@ export class LocalClient extends BaseClient {
 
   async info(): Promise<string> {
     return new Promise((resolve, reject) => {
-      exec(`"${this.connection.php}" ${getLocalPharClient()} ${this.connection.path} info`, (error, stdout) => {
+      exec(`"${this.connection.php}" "${getLocalPharClient()}" "${this.connection.path}" info`, (error, stdout) => {
         if (error) {
           reject(error.message)
           return
