@@ -3,6 +3,7 @@ import { ConnectionConfig } from '../../types/ssh.type'
 import { SSH } from '../utils/ssh'
 import { BaseClient } from './client.base'
 import path from 'path'
+import { base64Encode } from '../utils/base64-encode'
 
 export class SSHClient extends BaseClient {
   private ssh: SSH
@@ -62,7 +63,7 @@ export class SSHClient extends BaseClient {
         resolve('Client path not found')
         return
       }
-      const command = `${this.command()} execute ${btoa(code)}`
+      const command = `${this.command()} execute ${base64Encode(code)}`
       const result = await this.ssh.exec(command)
       resolve(result)
     })

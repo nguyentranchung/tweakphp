@@ -4,6 +4,7 @@ import * as settings from '../settings'
 import { app } from 'electron'
 import path from 'path'
 import { BaseClient } from './client.base'
+import { base64Encode } from '../utils/base64-encode'
 
 export class LocalClient extends BaseClient {
   constructor(public connection: ConnectionConfig) {
@@ -14,7 +15,7 @@ export class LocalClient extends BaseClient {
     return new Promise(resolve => {
       const phpPath = `"${this.connection.php}"`
       const path = `"${this.connection.path}"`
-      const command = `${phpPath} "${getLocalPharClient()}" ${path} execute ${btoa(code)}`
+      const command = `${phpPath} "${getLocalPharClient()}" ${path} execute ${base64Encode(code)}`
       exec(command, (_err, stdout) => {
         resolve(stdout)
       })

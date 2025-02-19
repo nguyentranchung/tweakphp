@@ -5,6 +5,7 @@ import { BaseClient } from './client.base'
 import { isWindows } from '../system/platform'
 import { app } from 'electron'
 import path from 'path'
+import { base64Encode } from '../utils/base64-encode'
 
 const dockerPathCache: Record<string, string> = {}
 
@@ -37,7 +38,7 @@ export default class DockerClient extends BaseClient {
       const path = `"${this.connection.working_directory}"`
       const clientPath = `"${this.connection.client_path}"`
       const dockerPath = await this.getDockerPath()
-      const command = `${dockerPath} exec ${this.connection.container_name} ${phpPath} ${clientPath} ${path} execute ${btoa(code)}`
+      const command = `${dockerPath} exec ${this.connection.container_name} ${phpPath} ${clientPath} ${path} execute ${base64Encode(code)}`
 
       if (this.ssh) {
         result = await this.ssh.exec(command)

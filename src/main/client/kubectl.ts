@@ -3,6 +3,7 @@ import { ConnectionConfig } from '../../types/kubectl.type'
 import { Kubectl } from '../utils/kubectl'
 import { BaseClient } from './client.base'
 import path from 'path'
+import { base64Encode } from '../utils/base64-encode'
 
 export default class KubectlClient extends BaseClient {
   private kubectl: Kubectl
@@ -38,7 +39,7 @@ export default class KubectlClient extends BaseClient {
 
   execute(code: string): Promise<string> {
     return new Promise(async resolve => {
-      const command = `${this.command()} execute ${btoa(code)}`
+      const command = `${this.command()} execute ${base64Encode(code)}`
       const result = await this.kubectl.exec(command, this.connection)
       resolve(result)
     })
