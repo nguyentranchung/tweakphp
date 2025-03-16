@@ -95,10 +95,7 @@
             :disabled="executeStore.executing"
           >
             <ArrowPathIcon v-if="executeStore.executing" :spin="true" class="text-primary-500 animate-spin size-4" />
-            <PlayIcon
-              v-else
-              class="size-4 cursor-pointer hover:text-primary-500"
-            />
+            <PlayIcon v-else class="size-4 cursor-pointer hover:text-primary-500" />
           </SecondaryButton>
           <SecondaryButton
             v-if="tab"
