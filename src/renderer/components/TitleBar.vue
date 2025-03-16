@@ -91,11 +91,12 @@
           <SecondaryButton
             class="!px-2"
             v-tippy="{ content: `${platform === 'darwin' ? 'Cmd' : 'Ctrl'} + R`, placement: 'bottom' }"
+            @click="execute"
+            :disabled="executeStore.executing"
           >
             <ArrowPathIcon v-if="executeStore.executing" :spin="true" class="text-primary-500 animate-spin size-4" />
             <PlayIcon
-              v-if="!executeStore.executing"
-              @click="execute"
+              v-else
               class="size-4 cursor-pointer hover:text-primary-500"
             />
           </SecondaryButton>
