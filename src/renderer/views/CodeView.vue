@@ -188,6 +188,13 @@
     }
   }
 
+  const handleInsertSnippet = (event: any) => {
+    const snippetCode = event.detail;
+    if (codeEditor.value && snippetCode) {
+      codeEditor.value.insertSnippet(snippetCode);
+    }
+  }
+
   onMounted(async () => {
     window.ipcRenderer.on('lsp.restart.success', () => {
       console.log('LSP restart success, reconnecting editors...')
@@ -227,6 +234,7 @@
     events.addEventListener('client.execute.reply', executeReplyListener)
     events.addEventListener('client.info.reply', infoReplyListener)
     events.addEventListener('client.action.reply', vaporResponseEnvironmentTab)
+    events.addEventListener('insert-snippet', handleInsertSnippet)
     if (tabsContainer.value) {
       tabsContainer.value.scrollLeft = tabsStore.scrollPosition
       tabsContainer.value.addEventListener('wheel', tabsContainerWheelListener)
@@ -239,6 +247,7 @@
     events.removeEventListener('client.info.reply', infoReplyListener)
     events.removeEventListener('client.action.reply', vaporResponseEnvironmentTab)
     events.removeEventListener('execute', executeHandler)
+    events.removeEventListener('insert-snippet', handleInsertSnippet)
     if (tabsContainer.value) {
       tabsContainer.value.removeEventListener('wheel', tabsContainerWheelListener)
     }

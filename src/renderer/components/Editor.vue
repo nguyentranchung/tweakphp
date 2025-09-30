@@ -8,11 +8,13 @@
   import { installOutputLanguage, installPHPLanguage, installThemes } from '../editor'
   import { useSettingsStore } from '../stores/settings'
   import { useLspStore } from '../stores/lsp'
+  import { useSnippetStore } from '../stores/snippet'
   import { useTabsStore } from '../stores/tabs'
 
   const settingsStore = useSettingsStore()
   const lspStore = useLspStore()
   const tabsStore = useTabsStore()
+  const snippetStore = useSnippetStore()
 
   // Props
   const props = defineProps({
@@ -47,6 +49,27 @@
       default: false,
     },
   })
+
+  const insertSnippet = (snippetCode: string) => {
+    if (!editor) {
+      return;
+    }
+
+    const selection = editor.getSelection();
+
+    if (!selection) {
+      return;
+    }
+
+    const op = {
+      range: selection,
+      text: snippetCode,
+      forceMoveMarkers: true,
+    };
+
+    editor.executeEdits('snippet-inserter', [op]);
+    editor.focus();
+  };
 
   const editorContainer = ref(null)
   const vimMode = ref(null)
@@ -160,6 +183,27 @@
           emit('update:value', editor!.getValue())
         })
       }
+
+      editor.addAction({
+        id: 'save-snippet',
+        label: 'Save Snippet',
+        contextMenuGroupId: 'navigation',
+        keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyS],
+        run: editor => {
+          const selection = editor.getSelection()
+          const model = editor.getModel()
+          if (!model) {
+            console.warn('No model found for the editor.')
+            return
+          }
+
+          if (!selection || selection.isEmpty()) {
+            console.warn('No code selected to save.')
+            return
+          }
+          snippetStore.openModal(model.getValueInRange(selection))
+        },
+      })
 
       if (settingsStore.settings.vimMode === 'on') {
         vimMode.value = initVimMode(editor)
@@ -348,6 +392,7 @@
     updateValue,
     focusEditor,
     reconnectLsp,
+    insertSnippet,
   })
 </script>
 

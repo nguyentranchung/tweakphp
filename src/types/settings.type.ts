@@ -11,5 +11,4 @@ export interface Settings {
   stackedDump: string
   windowWidth: number
   windowHeight: number
-  intelephenseLicenseKey?: string
 }
