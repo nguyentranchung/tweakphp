@@ -11,9 +11,8 @@
   import TagsInput from '../components/TagsInput.vue'
   import { z } from 'zod'
   import { useTabsStore } from '../stores/tabs'
-  import { refAutoReset } from '@vueuse/core'
   import events from '../events'
-  import ModalAdvance from '@/components/ModalAdvance.vue'
+  import ModalConfirmation from '@/components/ModalConfirmation.vue'
 
   const tabsStore = useTabsStore()
 
@@ -22,7 +21,6 @@
   }>()
 
   const loadingEdit = ref<boolean>(false)
-  const confirmDelete = refAutoReset<boolean>(false, 5000) // Reset after 5 seconds
 
   const errorResponse = ref<string>('')
   const snippetSelected = ref<Snippet | null>(null)
@@ -78,7 +76,6 @@
   const selectedSnippet = () => {
     if (!snippetSelected.value) return
     enableEditMode.value = false
-    confirmDelete.value = false
     snippetName.value = snippetSelected.value.name
     snippetTags.value = snippetSelected.value.tags || []
     snippetCode.value = snippetSelected.value.code
@@ -103,14 +100,7 @@
 
   const handleDelete = () => {
     if (!snippetSelected.value) return
-
-    if (!confirmDelete.value) {
-      confirmDelete.value = true
-      return
-    }
-
     enableEditMode.value = false
-    confirmDelete.value = false
     window.ipcRenderer.send('delete-snippet', snippetSelected.value.id)
     window.ipcRenderer.on('delete-snippet.reply', response => {
       if (response.error) {
@@ -325,10 +315,25 @@
           </div>
 
           <div class="flex items-center justify-between mt-2">
-            <PrimaryButton @click="handleDelete" class="flex items-center gap-1">
-              <span v-if="!confirmDelete">Delete</span>
-              <span v-else> Are you sure? </span>
-            </PrimaryButton>
+            <ModalConfirmation
+              modalFirstTitle="Delete Snippet"
+              modalFirstTitleContent="This action cannot be undone."
+              modalSecondTitle="Snippet deleted"
+              modalSecondTitleContent="The snippet has been successfully deleted."
+              labelActionConfirm="Confirm"
+              labelConfirmTitle="Snippet Deleted"
+              modalFirstSubTitleContent="Please confirm your action."
+              modalSecondSubTitleContent="The snippet has been removed from your list."
+              labelCancelAction="Cancel"
+              labelEndAction="Close"
+              @confirm="handleDelete"
+            >
+              <template #openFirstModal="{ firstModal }">
+                <PrimaryButton @click="firstModal.openModal()" class="flex items-center gap-1">
+                  Delete
+                </PrimaryButton>
+              </template>
+            </ModalConfirmation>
             <div class="flex justify-center gap-2 items-center">
               <PrimaryButton @click="editOrSaveSnippet" class="flex items-center gap-1">
                 <span>{{ enableEditMode ? 'Save' : 'Edit' }}</span>
