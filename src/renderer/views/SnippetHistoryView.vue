@@ -118,9 +118,11 @@
     if (!snippetSelected.value) return
     if (!tabsStore.current) return
 
-    events.dispatchEvent(new CustomEvent('insert-snippet', {
-      detail: snippetSelected.value.code
-    }));
+    events.dispatchEvent(
+      new CustomEvent('insert-snippet', {
+        detail: snippetSelected.value.code,
+      })
+    )
 
     emit('selected', snippetSelected.value)
   }
@@ -282,9 +284,7 @@
             </div>
           </div>
 
-          <div
-          class="rounded overflow-hidden border-2 border-gray-500/20"
-          >
+          <div class="rounded overflow-hidden border-2 border-gray-500/20">
             <Editor
               v-if="!enableEditMode"
               ref="snippetShow"
@@ -329,19 +329,14 @@
               @confirm="handleDelete"
             >
               <template #openFirstModal="{ firstModal }">
-                <PrimaryButton @click="firstModal.openModal()" class="flex items-center gap-1">
-                  Delete
-                </PrimaryButton>
+                <PrimaryButton @click="firstModal.openModal()" class="flex items-center gap-1"> Delete </PrimaryButton>
               </template>
             </ModalConfirmation>
             <div class="flex justify-center gap-2 items-center">
               <PrimaryButton @click="editOrSaveSnippet" class="flex items-center gap-1">
                 <span>{{ enableEditMode ? 'Save' : 'Edit' }}</span>
               </PrimaryButton>
-              <div
-                v-if="!enableEditMode"
-                class="flex justify-center gap-2 items-center"
-              >
+              <div v-if="!enableEditMode" class="flex justify-center gap-2 items-center">
                 <PrimaryButton @click="handleUse">
                   <div class="flex items-center gap-1">
                     <span> Add </span>

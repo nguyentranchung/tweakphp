@@ -4,7 +4,8 @@
   import PrimaryButton from '../components/PrimaryButton.vue'
   import SecondaryButton from '../components/SecondaryButton.vue'
 
-  withDefaults(  defineProps<{
+  withDefaults(
+    defineProps<{
       modalFirstTitle: string
       modalFirstTitleContent: string
       modalSecondTitle: string
@@ -15,9 +16,11 @@
       modalSecondSubTitleContent?: string
       labelCancelAction?: string
       labelEndAction?: string
-    }>(), {
+    }>(),
+    {
       labelCancelAction: 'Cancel',
-  })
+    }
+  )
 
   const emit = defineEmits<{
     (e: 'confirm'): void
@@ -31,21 +34,18 @@
     emit('confirm')
     secondModal.value.openModal()
   }
-
 </script>
 
 <template>
   <div>
-    <slot name=openFirstModal :firstModal="firstModal">
-      <PrimaryButton @click="firstModal.openModal()">
-        Open Modal
-      </PrimaryButton>
+    <slot name="openFirstModal" :firstModal="firstModal">
+      <PrimaryButton @click="firstModal.openModal()"> Open Modal </PrimaryButton>
     </slot>
 
     <Modal ref="firstModal" :title="modalFirstTitle">
       <p class="text-sm opacity-80 mb-5">
         {{ modalFirstTitleContent }}
-        <b v-if="modalFirstSubTitleContent"><br>{{ modalFirstSubTitleContent }}</b>
+        <b v-if="modalFirstSubTitleContent"><br />{{ modalFirstSubTitleContent }}</b>
       </p>
 
       <div class="mt-6 flex justify-end space-x-3">
@@ -61,7 +61,7 @@
     <Modal ref="secondModal" :title="modalSecondTitle">
       <p class="text-sm opacity-80 mb-5">
         {{ modalSecondTitleContent }}
-        <b v-if="modalSecondSubTitleContent"><br>{{ modalSecondSubTitleContent }}</b>
+        <b v-if="modalSecondSubTitleContent"><br />{{ modalSecondSubTitleContent }}</b>
       </p>
       <div class="flex justify-end">
         <SecondaryButton @click="secondModal.closeModal()">

@@ -52,24 +52,24 @@
 
   const insertSnippet = (snippetCode: string) => {
     if (!editor) {
-      return;
+      return
     }
 
-    const selection = editor.getSelection();
+    const selection = editor.getSelection()
 
     if (!selection) {
-      return;
+      return
     }
 
     const op = {
       range: selection,
       text: snippetCode,
       forceMoveMarkers: true,
-    };
+    }
 
-    editor.executeEdits('snippet-inserter', [op]);
-    editor.focus();
-  };
+    editor.executeEdits('snippet-inserter', [op])
+    editor.focus()
+  }
 
   const editorContainer = ref(null)
   const vimMode = ref(null)
